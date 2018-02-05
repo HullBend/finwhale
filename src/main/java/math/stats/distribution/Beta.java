@@ -23,83 +23,83 @@ import static math.FastGamma.logGamma;
  */
 public class Beta extends AbstractContinuousDistribution {
 
-	private final double alpha;
-	private final double beta;
-	private final double pdfNormFactor;
-	private final Gamma gamma_U;
-	private final Gamma gamma_V;
+    private final double alpha;
+    private final double beta;
+    private final double pdfNormFactor;
+    private final Gamma gamma_U;
+    private final Gamma gamma_V;
 
-	public Beta(final double alpha, final double beta) {
-		this(DefaultRng.newPseudoRandom(), alpha, beta);
-	}
+    public Beta(final double alpha, final double beta) {
+        this(DefaultRng.newPseudoRandom(), alpha, beta);
+    }
 
-	public Beta(final PseudoRandom prng, final double alpha, final double beta) {
-		super(prng);
-		if (alpha <= 0.0) {
-			throw new IllegalArgumentException("alpha <= 0.0");
-		}
-		if (beta <= 0.0) {
-			throw new IllegalArgumentException("beta <= 0.0");
-		}
-		this.alpha = alpha;
-		this.beta = beta;
-		this.pdfNormFactor = FastMath.exp(logGamma(alpha + beta)
-				- (logGamma(alpha) + logGamma(beta)));
+    public Beta(final PseudoRandom prng, final double alpha, final double beta) {
+        super(prng);
+        if (alpha <= 0.0) {
+            throw new IllegalArgumentException("alpha <= 0.0");
+        }
+        if (beta <= 0.0) {
+            throw new IllegalArgumentException("beta <= 0.0");
+        }
+        this.alpha = alpha;
+        this.beta = beta;
+        this.pdfNormFactor = FastMath.exp(logGamma(alpha + beta)
+                - (logGamma(alpha) + logGamma(beta)));
 
-		gamma_U = new Gamma(this.prng, alpha);
-		gamma_V = new Gamma(DefaultRng.newIndepPseudoRandom(this.prng), beta);
-	}
+        gamma_U = new Gamma(this.prng, alpha);
+        gamma_V = new Gamma(DefaultRng.newIndepPseudoRandom(this.prng), beta);
+    }
 
-	@Override
-	public double pdf(final double x) {
-		if (x < 0.0 || x > 1.0) {
-			return 0.0;
-		}
-		return pdfNormFactor * FastMath.pow(x, alpha - 1)
-				* FastMath.pow(1 - x, beta - 1);
-	}
+    @Override
+    public double pdf(final double x) {
+        if (x < 0.0 || x > 1.0) {
+            return 0.0;
+        }
+        return pdfNormFactor * FastMath.pow(x, alpha - 1)
+                * FastMath.pow(1 - x, beta - 1);
+    }
 
-	@Override
-	public double cdf(final double x) {
-		if (x <= 0.0) {
-			return 0.0;
-		} else if (x >= 1.0) {
-			return 1.0;
-		}
-		return ProbabilityFuncs.beta(alpha, beta, x);
-	}
+    @Override
+    public double cdf(final double x) {
+        if (x <= 0.0) {
+            return 0.0;
+        } else if (x >= 1.0) {
+            return 1.0;
+        }
+        return ProbabilityFuncs.beta(alpha, beta, x);
+    }
 
-	@Override
-	public double sample() {
-		// This may not be the most efficient solution,
-		// but it doesn't get any simpler. The problem is
-		// alpha and beta must not be too small, especially
-		// a beta < 1 paired with a very large alpha is numerically
-		// inaccurate. But this seems to be true for all algorithms
-		// (commons.math appears to be even more inaccurate than this
-		// simple implementation - not to mention that it is much slower).
+    @Override
+    public double sample() {
+        // This may not be the most efficient solution,
+        // but it doesn't get any simpler. The problem is
+        // alpha and beta must not be too small, especially
+        // a beta < 1 paired with a very large alpha is numerically
+        // inaccurate. But this seems to be true for all algorithms
+        // (commons.math appears to be even more inaccurate than this
+        // simple implementation - not to mention that it is much slower).
 
-		final double u = gamma_U.sample();
-		return u / (u + gamma_V.sample());
-	}
+        final double u = gamma_U.sample();
+        return u / (u + gamma_V.sample());
+    }
 
-	@Override
-	public double mean() {
-		return alpha / (alpha + beta);
-	}
+    @Override
+    public double mean() {
+        return alpha / (alpha + beta);
+    }
 
-	@Override
-	public double variance() {
-		final double alphaPlusBeta = alpha + beta;
-		return (alpha * beta)
-				/ (alphaPlusBeta * alphaPlusBeta * (alphaPlusBeta + 1));
-	}
+    @Override
+    public double variance() {
+        final double alphaPlusBeta = alpha + beta;
+        return (alpha * beta)
+                / (alphaPlusBeta * alphaPlusBeta * (alphaPlusBeta + 1));
+    }
 
-	public double getAlpha() {
-		return alpha;
-	}
+    public double getAlpha() {
+        return alpha;
+    }
 
-	public double getBeta() {
-		return beta;
-	}
+    public double getBeta() {
+        return beta;
+    }
 }

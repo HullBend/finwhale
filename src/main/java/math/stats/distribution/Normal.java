@@ -38,66 +38,66 @@ import static math.MathConsts.SQRT_TWO_PI;
  */
 public class Normal extends AbstractContinuousDistribution {
 
-	/** Mean of this distribution */
-	private final double mean;
+    /** Mean of this distribution */
+    private final double mean;
 
-	/** Standard deviation of this distribution */
-	private final double stdDev;
+    /** Standard deviation of this distribution */
+    private final double stdDev;
 
-	/** Variance of this distribution */
-	private final double variance;
+    /** Variance of this distribution */
+    private final double variance;
 
-	/** 1.0 / (stdDev * sqrt(2 * PI)) */
-	private final double factor;
+    /** 1.0 / (stdDev * sqrt(2 * PI)) */
+    private final double factor;
 
-	public Normal() {
-		this(0.0, 1.0);
-	}
+    public Normal() {
+        this(0.0, 1.0);
+    }
 
-	public Normal(final PseudoRandom prng) {
-		this(prng, 0.0, 1.0);
-	}
+    public Normal(final PseudoRandom prng) {
+        this(prng, 0.0, 1.0);
+    }
 
-	public Normal(final double mean, final double stdDev) {
-		this(DefaultRng.newPseudoRandom(), mean, stdDev);
-	}
+    public Normal(final double mean, final double stdDev) {
+        this(DefaultRng.newPseudoRandom(), mean, stdDev);
+    }
 
-	public Normal(final PseudoRandom prng, final double mean,
-			final double stdDev) {
-		super(prng);
-		if (stdDev <= 0.0) {
-			throw new IllegalArgumentException(
-					"Standard deviation must be positive (" + stdDev + ")");
-		}
-		this.mean = mean;
-		this.stdDev = stdDev;
-		this.variance = stdDev * stdDev;
-		this.factor = (1.0 / (this.variance * SQRT_TWO_PI));
-	}
+    public Normal(final PseudoRandom prng, final double mean,
+            final double stdDev) {
+        super(prng);
+        if (stdDev <= 0.0) {
+            throw new IllegalArgumentException(
+                    "Standard deviation must be positive (" + stdDev + ")");
+        }
+        this.mean = mean;
+        this.stdDev = stdDev;
+        this.variance = stdDev * stdDev;
+        this.factor = (1.0 / (this.variance * SQRT_TWO_PI));
+    }
 
-	@Override
-	public double pdf(final double x) {
-		double xMinusMu = (x - mean);
-		return factor * FastMath.exp(-(xMinusMu * xMinusMu) / (2.0 * variance));
-	}
+    @Override
+    public double pdf(final double x) {
+        double xMinusMu = (x - mean);
+        return factor * FastMath.exp(-(xMinusMu * xMinusMu) / (2.0 * variance));
+    }
 
-	@Override
-	public double cdf(final double x) {
-		return ProbabilityFuncs.normal(mean, variance, x);
-	}
+    @Override
+    public double cdf(final double x) {
+        return ProbabilityFuncs.normal(mean, variance, x);
+    }
 
-	@Override
-	public double sample() {
-		return mean + prng.nextGaussian() * stdDev;
-	}
+    @Override
+    public double sample() {
+        return mean + prng.nextGaussian() * stdDev;
+    }
 
-	@Override
-	public double mean() {
-		return mean;
-	}
+    @Override
+    public double mean() {
+        return mean;
+    }
 
-	@Override
-	public double variance() {
-		return variance;
-	}
+    @Override
+    public double variance() {
+        return variance;
+    }
 }
