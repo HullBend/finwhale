@@ -1135,7 +1135,6 @@ public final class FastMath {
      * @param d
      *            the floating-point value whose ulp is to be returned
      * @return the size of an ulp of the argument
-     * @author Joseph D. Darcy
      * @since 1.5
      */
     public static double ulp(double d) {
@@ -1163,7 +1162,6 @@ public final class FastMath {
      * @param f
      *            the floating-point value whose ulp is to be returned
      * @return the size of an ulp of the argument
-     * @author Joseph D. Darcy
      * @since 1.5
      */
     public static float ulp(float f) {
@@ -1186,7 +1184,6 @@ public final class FastMath {
      * @param d
      *            the floating-point value whose signum is to be returned
      * @return the signum function of the argument
-     * @author Joseph D. Darcy
      * @since 1.5
      */
     public static double signum(double d) {
@@ -1209,7 +1206,6 @@ public final class FastMath {
      * @param f
      *            the floating-point value whose signum is to be returned
      * @return the signum function of the argument
-     * @author Joseph D. Darcy
      * @since 1.5
      */
     public static float signum(float f) {
