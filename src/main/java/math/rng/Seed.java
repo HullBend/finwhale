@@ -11,7 +11,7 @@ public final class Seed {
     private static long nextSeedUniquifier() {
         // Pierre L'Ecuyer: "Tables of Linear Congruential Generators
         // of Different Sizes and Good Lattice Structure"
-        seedUniquifier *= 0x285d320ad33fdb5L;
+        seedUniquifier *= 0x106689d45497fdb5L;
         return seedUniquifier;
     }
 
