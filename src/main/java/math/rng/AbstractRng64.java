@@ -26,7 +26,6 @@ package math.rng;
  * the call to {@link #nextLong()} whenever less than {@code 33} random bits are
  * needed for the result type.
  * <p/>
- * TODO: explain synchronization policy!
  */
 public abstract class AbstractRng64 implements PseudoRandom {
 
@@ -34,7 +33,7 @@ public abstract class AbstractRng64 implements PseudoRandom {
     protected static final float FLOAT_NORM = 1.0F / (1 << 24);
 
     /** cache for the next gaussian */
-    protected volatile double nextGaussian = Double.NaN; // TODO: non-volatile!!?
+    protected double nextGaussian = Double.NaN;
 
     @Override
     public abstract long nextLong();
@@ -45,9 +44,8 @@ public abstract class AbstractRng64 implements PseudoRandom {
         return (nextLong() >>> 11) * DOUBLE_NORM;
     }
 
-    // TODO: final ?
     @Override
-    public double nextGaussian() { // TODO: synchronized!?!
+    public final double nextGaussian() {
         final double rndVal;
         if (Double.isNaN(nextGaussian)) {
             // Marsaglia's polar method
@@ -77,7 +75,6 @@ public abstract class AbstractRng64 implements PseudoRandom {
         return (int) (nextLong() >> 32);
     }
 
-    // TODO: testing!
     @Override
     public void nextBytes(final byte[] bytes) {
         // awful code (adapted from java.util.Random)
