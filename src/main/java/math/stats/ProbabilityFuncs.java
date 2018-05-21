@@ -418,8 +418,7 @@ public final class ProbabilityFuncs {
         if (x < 0.0) {
             return 0.0;
         }
-        return Gamma.incompleteGammaComplement(b, a * x); // TODO: WRONG !?! =>
-                                                          // (a, b*x)??
+        return Gamma.incompleteGammaComplement(b, a * x);
     }
 
     /**
