@@ -17,6 +17,7 @@ package math.stats.distribution;
 
 import math.FastMath;
 import math.rng.DefaultRng;
+import math.rng.PseudoRandom;
 import math.stats.ProbabilityFuncs;
 
 /**
@@ -27,13 +28,17 @@ public class LogNormal extends AbstractContinuousDistribution {
     private final double mu;
     private final double sigma;
 
-    public LogNormal(double mu, double sigma) {
-        super(DefaultRng.newPseudoRandom());
+    public LogNormal(PseudoRandom prng, double mu, double sigma) {
+        super(prng);
         if (sigma <= 0.0) {
             throw new IllegalArgumentException("sigma <= 0.0 : " + sigma);
         }
         this.mu = mu;
         this.sigma = sigma;
+    }
+
+    public LogNormal(double mu, double sigma) {
+        this(DefaultRng.newPseudoRandom(), mu, sigma);
     }
 
     @Override
