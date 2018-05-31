@@ -45,6 +45,12 @@ public final class MathConsts {
 
     public static final double BIG_INV = 2.22044604925031308085e-16;
 
+    /** 4.450147717014403e-308 */
+    public static final double MIN_VAL = 2.0 * Double.MIN_NORMAL;
+
+    /** 5.218048215738236e-15 */
+    public static final double MIN_TOL = (45.0 * MACH_EPS) + BIG_INV;
+
     private MathConsts() {
     }
 }
