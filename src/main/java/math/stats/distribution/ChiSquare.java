@@ -73,10 +73,10 @@ public class ChiSquare extends AbstractContinuousDistribution {
      */
     public double inverse(double probability) {
         if (probability <= 0.0) {
-            return 0.0; // TODO is this correct?
+            return 0.0; // < 0 is not entirely correct (TODO)
         }
         if (probability >= 1.0) {
-            return Double.MAX_VALUE;
+            return Double.MAX_VALUE; // > 1 is not entirely correct (TODO)
         }
         return gamma.inverse(probability);
     }

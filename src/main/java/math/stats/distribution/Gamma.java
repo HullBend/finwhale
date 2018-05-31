@@ -191,10 +191,10 @@ public class Gamma extends AbstractContinuousDistribution {
      */
     public double inverse(double probability) {
         if (probability <= 0.0) {
-            return 0.0;
+            return 0.0; // < 0 is not entirely correct (TODO)
         }
         if (probability >= 1.0) {
-            return Double.MAX_VALUE;
+            return Double.MAX_VALUE; // > 1 is not entirely correct (TODO)
         }
         return findRoot(probability, mean(), 0.0, Double.MAX_VALUE);
     }
