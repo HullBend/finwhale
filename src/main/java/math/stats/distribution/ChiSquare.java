@@ -69,7 +69,7 @@ public class ChiSquare extends AbstractContinuousDistribution {
     }
 
     /**
-     * Inverse of the chi-squared cumulative distribution function.
+     * Inverse of the Chi-squared cumulative distribution function.
      * 
      * @return the value X for which P(x&lt;=X).
      */

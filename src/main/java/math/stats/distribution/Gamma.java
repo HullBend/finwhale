@@ -185,7 +185,7 @@ public class Gamma extends AbstractContinuousDistribution {
     }
 
     /**
-     * Inverse of the cumulative gamma distribution function.
+     * Inverse of the Gamma cumulative distribution function.
      * 
      * @return the value X for which P(x&lt;=X).
      */
