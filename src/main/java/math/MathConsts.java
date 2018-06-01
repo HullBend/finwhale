@@ -54,6 +54,9 @@ public final class MathConsts {
     /** 5.218048215738236e-15 */
     public static final double MIN_TOL = (45.0 * MACH_EPS) + BIG_INV;
 
+    /** Largest int x such that 10^x is representable (approximately) as double */
+    public static final int MAX_X_FOR_10_EXP_X_AS_DOUBLE = 308;
+
     private MathConsts() {
     }
 }
