@@ -59,7 +59,7 @@ public class Uniform extends AbstractContinuousDistribution {
 
     @Override
     public double cdf(double x) {
-        if (x < a) {
+        if (x <= a) {
             return 0.0;
         }
         if (x >= b) {
