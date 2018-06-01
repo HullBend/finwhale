@@ -8,6 +8,6 @@ Statistical distributions library  (in statu nascendi)
 <dependency>
     <groupId>com.github.hullbend</groupId>
     <artifactId>finwhale</artifactId>
-    <version>0.9.0</version>
+    <version>0.9.1</version>
 </dependency>
 ```
