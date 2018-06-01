@@ -22,6 +22,8 @@ import math.stats.ProbabilityFuncs;
 
 /**
  * TODO
+ * <p>
+ * https://en.wikipedia.org/wiki/Log-normal_distribution
  */
 public class LogNormal extends AbstractContinuousDistribution {
 
@@ -75,6 +77,7 @@ public class LogNormal extends AbstractContinuousDistribution {
         return FastMath.exp(mu + sigma * stdNormal);
     }
 
+    @Override
     public String toString() {
         return getSimpleName(mu, sigma);
     }

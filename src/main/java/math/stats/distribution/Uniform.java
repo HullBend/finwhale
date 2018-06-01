@@ -20,6 +20,8 @@ import math.rng.PseudoRandom;
 
 /**
  * TODO
+ * <p>
+ * https://en.wikipedia.org/wiki/Uniform_distribution_(continuous)
  */
 public class Uniform extends AbstractContinuousDistribution {
 
@@ -81,6 +83,7 @@ public class Uniform extends AbstractContinuousDistribution {
         return ((b - a) * (b - a)) / 12.0;
     }
 
+    @Override
     public String toString() {
         return getSimpleName(a, b);
     }

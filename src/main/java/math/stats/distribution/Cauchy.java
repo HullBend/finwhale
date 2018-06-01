@@ -21,6 +21,8 @@ import math.rng.PseudoRandom;
 
 /**
  * TODO
+ * <p>
+ * https://en.wikipedia.org/wiki/Cauchy_distribution
  */
 public class Cauchy extends AbstractContinuousDistribution {
 
@@ -96,6 +98,7 @@ public class Cauchy extends AbstractContinuousDistribution {
         return scale;
     }
 
+    @Override
     public String toString() {
         return getSimpleName(loc, scale);
     }

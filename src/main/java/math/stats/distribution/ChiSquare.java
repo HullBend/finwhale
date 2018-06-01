@@ -20,6 +20,8 @@ import math.rng.PseudoRandom;
 
 /**
  * TODO
+ * <p>
+ * https://en.wikipedia.org/wiki/Chi-squared_distribution
  */
 public class ChiSquare extends AbstractContinuousDistribution {
 
@@ -98,6 +100,7 @@ public class ChiSquare extends AbstractContinuousDistribution {
         return degreesOfFreedom;
     }
 
+    @Override
     public String toString() {
         return getSimpleName(degreesOfFreedom);
     }

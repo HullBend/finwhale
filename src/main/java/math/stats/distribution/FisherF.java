@@ -18,6 +18,11 @@ package math.stats.distribution;
 import math.rng.DefaultRng;
 import math.rng.PseudoRandom;
 
+/**
+ * TODO
+ * <p>
+ * https://en.wikipedia.org/wiki/F-distribution
+ */
 public class FisherF extends AbstractContinuousDistribution {
 
     private final int d1; // numerator DF
@@ -118,6 +123,7 @@ public class FisherF extends AbstractContinuousDistribution {
         return d2;
     }
 
+    @Override
     public String toString() {
         return getSimpleName(d1, d2);
     }

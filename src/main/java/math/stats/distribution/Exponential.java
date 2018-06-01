@@ -19,6 +19,11 @@ import math.FastMath;
 import math.rng.DefaultRng;
 import math.rng.PseudoRandom;
 
+/**
+ * TODO
+ * <p>
+ * https://en.wikipedia.org/wiki/Exponential_distribution
+ */
 public class Exponential extends AbstractContinuousDistribution {
 
     private static final double BIG = 100.0;
@@ -73,6 +78,7 @@ public class Exponential extends AbstractContinuousDistribution {
         return (1.0 / (lambda * lambda));
     }
 
+    @Override
     public String toString() {
         return getSimpleName(lambda);
     }
