@@ -15,6 +15,7 @@
  */
 package math.stats.distribution;
 
+import math.FastGamma;
 import math.FastMath;
 import math.rng.DefaultRng;
 import math.rng.PseudoRandom;
@@ -34,6 +35,8 @@ public class Weibull extends AbstractContinuousDistribution {
     private final double inverse_scale;
     private final double inverse_shape;
     private final double shape_dividedby_scale;
+    // cached mean
+    private double cached_mean = Double.NaN;
 
     public Weibull(double scale /* lambda */, double shape /* k */) {
         this(DefaultRng.newPseudoRandom(), scale, shape);
@@ -94,8 +97,10 @@ public class Weibull extends AbstractContinuousDistribution {
      */
     @Override
     public double mean() {
-        // TODO Auto-generated method stub
-        return 0;
+        if (Double.isNaN(cached_mean)) {
+            cached_mean = scale_lambda * FastMath.exp(FastGamma.logGamma(1.0 + inverse_shape));
+        }
+        return cached_mean;
     }
 
     /**
@@ -103,8 +108,9 @@ public class Weibull extends AbstractContinuousDistribution {
      */
     @Override
     public double variance() {
-        // TODO Auto-generated method stub
-        return 0;
+        double mean = mean();
+        return ((scale_lambda * scale_lambda) * FastMath.exp(FastGamma.logGamma(1.0 + (2.0 * inverse_shape))))
+                - (mean * mean);
     }
 
     /**
