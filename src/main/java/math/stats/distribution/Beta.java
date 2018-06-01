@@ -118,6 +118,7 @@ public class Beta extends AbstractContinuousDistribution {
         return beta;
     }
 
+    @Override
     public String toString() {
         return getSimpleName(alpha, beta);
     }

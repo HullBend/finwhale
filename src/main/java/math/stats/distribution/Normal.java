@@ -101,6 +101,7 @@ public class Normal extends AbstractContinuousDistribution {
         return variance;
     }
 
+    @Override
     public String toString() {
         return getSimpleName(mean, stdDev);
     }

@@ -217,6 +217,7 @@ public class Gamma extends AbstractContinuousDistribution {
         return scale_theta;
     }
 
+    @Override
     public String toString() {
         return getSimpleName(shape_k, scale_theta);
     }

@@ -113,6 +113,7 @@ public class StudentT extends AbstractContinuousDistribution {
         return df;
     }
 
+    @Override
     public String toString() {
         return getSimpleName(df);
     }
