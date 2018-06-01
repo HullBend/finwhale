@@ -95,4 +95,8 @@ public class Cauchy extends AbstractContinuousDistribution {
     public double getScale() {
         return scale;
     }
+
+    public String toString() {
+        return getSimpleName(loc, scale);
+    }
 }

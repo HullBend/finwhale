@@ -100,4 +100,8 @@ public class Normal extends AbstractContinuousDistribution {
     public double variance() {
         return variance;
     }
+
+    public String toString() {
+        return getSimpleName(mean, stdDev);
+    }
 }

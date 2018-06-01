@@ -72,4 +72,8 @@ public class Exponential extends AbstractContinuousDistribution {
     public double variance() {
         return (1.0 / (lambda * lambda));
     }
+
+    public String toString() {
+        return getSimpleName(lambda);
+    }
 }

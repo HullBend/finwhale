@@ -80,4 +80,8 @@ public class Uniform extends AbstractContinuousDistribution {
     public double variance() {
         return ((b - a) * (b - a)) / 12.0;
     }
+
+    public String toString() {
+        return getSimpleName(a, b);
+    }
 }

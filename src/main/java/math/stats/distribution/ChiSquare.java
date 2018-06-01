@@ -97,4 +97,8 @@ public class ChiSquare extends AbstractContinuousDistribution {
     public int getDegreesOfFreedom() {
         return degreesOfFreedom;
     }
+
+    public String toString() {
+        return getSimpleName(degreesOfFreedom);
+    }
 }

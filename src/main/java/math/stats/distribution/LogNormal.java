@@ -74,4 +74,8 @@ public class LogNormal extends AbstractContinuousDistribution {
         double stdNormal = prng.nextGaussian();
         return FastMath.exp(mu + sigma * stdNormal);
     }
+
+    public String toString() {
+        return getSimpleName(mu, sigma);
+    }
 }

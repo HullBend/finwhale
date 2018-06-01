@@ -48,6 +48,20 @@ public abstract class AbstractContinuousDistribution implements
         return samples;
     }
 
+    protected final String getSimpleName(Number... params) {
+        String name = getClass().getSimpleName();
+        StringBuilder buf = new StringBuilder(name);
+        buf.append("(");
+        for (int i = 0; i < params.length; ++i) {
+            buf.append(params[i]);
+            if (i != params.length - 1) {
+                buf.append(", ");
+            }
+        }
+        buf.append(")");
+        return buf.toString();
+    }
+
     private static final double FINDROOT_ACCURACY = 1.0e-15;
     private static final int FINDROOT_MAX_ITERATIONS = 150;
 

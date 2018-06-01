@@ -117,4 +117,8 @@ public class FisherF extends AbstractContinuousDistribution {
     public int getDenominatorDegreesOfFreedom() {
         return d2;
     }
+
+    public String toString() {
+        return getSimpleName(d1, d2);
+    }
 }

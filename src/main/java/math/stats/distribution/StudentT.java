@@ -112,4 +112,8 @@ public class StudentT extends AbstractContinuousDistribution {
     public int getDegreesOfFreedom() {
         return df;
     }
+
+    public String toString() {
+        return getSimpleName(df);
+    }
 }
