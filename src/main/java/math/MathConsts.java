@@ -41,6 +41,9 @@ public final class MathConsts {
     /** ln(PI) */
     public static final double LN_PI = 1.14472988584940017414; /* ln(PI) */
 
+    /** ln(10) */
+    public static final double LN_10 = Math.log(10.0); /* ln(10) */
+
     public static final double BIG = 4.503599627370496e15;
 
     public static final double BIG_INV = 2.22044604925031308085e-16;
