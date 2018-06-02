@@ -150,8 +150,6 @@ final class JafamaFastMath {
     private static final int MIN_DOUBLE_EXPONENT = -1074;
     private static final int MAX_DOUBLE_EXPONENT = 1023;
 
-    private static final double LOG_2 = StrictMath.log(2.0);
-
     //--------------------------------------------------------------------------
     // CONSTANTS FOR NORMALIZATIONS
     //--------------------------------------------------------------------------
@@ -279,15 +277,6 @@ final class JafamaFastMath {
     private static final double ATAN_AT8 = Double.longBitsToDouble(0x3fa97b4b24760debL); //  4.97687799461593236017e-02
     private static final double ATAN_AT9 = Double.longBitsToDouble(0xbfa2b4442c6a6c2fL); // -3.65315727442169155270e-02
     private static final double ATAN_AT10 = Double.longBitsToDouble(0x3f90ad3ae322da11L); // 1.62858201153657823623e-02
-
-    //--------------------------------------------------------------------------
-    // CONSTANTS AND TABLES FOR LOG AND LOG1P
-    //--------------------------------------------------------------------------
-
-    private static final int LOG_BITS = getTabSizePower(12);
-    private static final int LOG_TAB_SIZE = (1<<LOG_BITS);
-    private static final double[] logXLogTab = new double[LOG_TAB_SIZE];
-    private static final double[] logXInvTab = new double[LOG_TAB_SIZE];
 
     //--------------------------------------------------------------------------
     // TABLE FOR POWERS OF TWO
@@ -520,22 +509,7 @@ final class JafamaFastMath {
                 return z*(2+z2*((2.0/3)+z2*((2.0/5)+z2*((2.0/7)+z2*((2.0/9)+z2*((2.0/11)))))));
             }
 
-            int valuePlusOneBitsHi = (int)(Double.doubleToRawLongBits(valuePlusOne)>>32) & 0x7FFFFFFF;
-            int valuePlusOneExp = (valuePlusOneBitsHi>>20)-MAX_DOUBLE_EXPONENT;
-            // Getting the first LOG_BITS bits of the mantissa.
-            int xIndex = ((valuePlusOneBitsHi<<12)>>>(32-LOG_BITS));
-
-            // 1.mantissa/1.mantissaApprox - 1
-            double z = (valuePlusOne * twoPowNormalOrSubnormal(-valuePlusOneExp)) * logXInvTab[xIndex] - 1;
-
-            z *= (1-z*((1.0/2)-z*(1.0/3)));
-
-            // Adding epsilon/valuePlusOne to z,
-            // with
-            // epsilon = value - (valuePlusOne-1)
-            // (valuePlusOne + epsilon ~= 1+value (not rounded))
-
-            return valuePlusOneExp * LOG_2 + logXLogTab[xIndex] + (z + (value - (valuePlusOne-1))/valuePlusOne);
+            return Math.log1p(value);
         } else if (value == -1.0) {
             return Double.NEGATIVE_INFINITY;
         } else { // value < -1.0, or value is NaN
@@ -636,21 +610,6 @@ final class JafamaFastMath {
             return twoPowTab[power-MIN_DOUBLE_EXPONENT];
         } else {
             return Double.longBitsToDouble(((long)(power+MAX_DOUBLE_EXPONENT))<<52);
-        }
-    }
-
-    /**
-     * @param power Must be in normal or subnormal values range.
-     */
-    private static double twoPowNormalOrSubnormal(int power) {
-        if (USE_TWO_POW_TAB) {
-            return twoPowTab[power-MIN_DOUBLE_EXPONENT];
-        } else {
-            if (power <= -MAX_DOUBLE_EXPONENT) { // Not normal.
-                return Double.longBitsToDouble(0x0008000000000000L>>(-(power+MAX_DOUBLE_EXPONENT)));
-            } else { // Normal.
-                return Double.longBitsToDouble(((long)(power+MAX_DOUBLE_EXPONENT))<<52);
-            }
         }
     }
 
