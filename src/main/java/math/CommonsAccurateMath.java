@@ -643,17 +643,6 @@ final class CommonsAccurateMath {
     }
 
     /**
-     * Compute exp(x) - 1
-     * 
-     * @param x
-     *            number to compute shifted exponential
-     * @return exp(x) - 1
-     */
-    static double expm1(double x) {
-        return expm1_(x, null);
-    }
-
-    /**
      * Internal helper method for expm1
      * 
      * @param x

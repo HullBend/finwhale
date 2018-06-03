@@ -106,6 +106,7 @@ public final class FastMath {
         // StrictMath tan() can sometimes be faster than the intrinsic from
         // java.lang.Math
         return StrictMath.tan(a);
+//    	return sin(a) / cos(a);
     }
 
     /**
@@ -1073,7 +1074,7 @@ public final class FastMath {
      * @since 1.5
      */
     public static double expm1(double x) {
-        return CommonsAccurateMath.expm1(x);
+        return Math.expm1(x);
     }
 
     /**

@@ -81,7 +81,7 @@ public class Weibull extends AbstractContinuousDistribution {
             return 0.0;
         }
         double y = FastMath.pow(inverse_scale * x, shape_k);
-        return -FastMath.expm1(-y);
+        return -Math.expm1(-y);
     }
 
     /**
