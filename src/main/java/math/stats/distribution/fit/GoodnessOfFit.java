@@ -43,6 +43,7 @@ public final class GoodnessOfFit {
         Arrays.sort(transformed);
         UniformTestStatistics.Result statistics = UniformTestStatistics.compareEmpiricalToUniform(transformed);
         if (observations.length == 1) {
+            // one wants obs[0], not u[0]
             statistics.MEAN = observations[0];
         }
         return statistics;

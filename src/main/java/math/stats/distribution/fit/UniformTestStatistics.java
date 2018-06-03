@@ -81,7 +81,7 @@ public final class UniformTestStatistics {
             throw new IllegalArgumentException("obs == null || obs.length == 0");
         }
         Result statistic = new Result();
-        // we assume that u is already sorted
+        // we assume that obs is already sorted
         if (obs.length == 1) {
             statistic.KSP = 1.0 - obs[0];
             statistic.MEAN = obs[0];
