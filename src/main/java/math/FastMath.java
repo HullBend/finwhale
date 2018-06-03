@@ -106,7 +106,8 @@ public final class FastMath {
         // StrictMath tan() can sometimes be faster than the intrinsic from
         // java.lang.Math
         return StrictMath.tan(a);
-//    	return sin(a) / cos(a);
+//      that's a bit inaccurate around PI / 2
+//      return sin(a) / cos(a);
     }
 
     /**
