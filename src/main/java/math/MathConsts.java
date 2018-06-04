@@ -20,13 +20,16 @@ package math;
  */
 public final class MathConsts {
 
-    /** The IEEE 754 machine epsilon from Cephes (2^-53). */
+    /** The IEEE 754 machine epsilon from Cephes: {@code (2^-53)} */
     public static final double MACH_EPS = 1.11022302462515654042e-16;
 
+    /** 7.09782712893383996732e2 */
     public static final double MAX_LOG = 7.09782712893383996732e2;
 
+    /** -7.451332191019412076235e2 */
     public static final double MIN_LOG = -7.451332191019412076235e2;
 
+    /** 171.624376956302725 */
     public static final double MAX_GAMMA = 171.624376956302725;
 
     /** The value of {@code sqrt(2)} */
@@ -50,8 +53,10 @@ public final class MathConsts {
     /** The value of {@code ln(10)} */
     public static final double LN_10 = 2.302585092994046; /* ln(10) */
 
+    /** 4.503599627370496e15 */
     public static final double BIG = 4.503599627370496e15;
 
+    /** 2.22044604925031308085e-16 */
     public static final double BIG_INV = 2.22044604925031308085e-16;
 
     /** 4.450147717014403e-308 */
