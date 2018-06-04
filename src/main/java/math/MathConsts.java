@@ -21,27 +21,33 @@ package math;
 public final class MathConsts {
 
     /** The IEEE 754 machine epsilon from Cephes (2^-53). */
-    public static final double MACH_EPS = 1.11022302462515654042E-16; /* 2^-53 */
+    public static final double MACH_EPS = 1.11022302462515654042e-16;
 
-    public static final double MAX_LOG = 7.09782712893383996732E2;
+    public static final double MAX_LOG = 7.09782712893383996732e2;
 
-    public static final double MIN_LOG = -7.451332191019412076235E2;
+    public static final double MIN_LOG = -7.451332191019412076235e2;
 
     public static final double MAX_GAMMA = 171.624376956302725;
 
-    /** sqrt(2) */
-    public static final double SQRT_TWO = 1.41421356237309504880E0;
+    /** The value of {@code sqrt(2)} */
+    public static final double SQRT_TWO = 1.41421356237309504880e0;
 
-    /** sqrt(2*PI) */
-    public static final double SQRT_TWO_PI = 2.50662827463100050242E0;
+    /** The value of {@code sqrt(2*PI)} */
+    public static final double SQRT_TWO_PI = 2.50662827463100050242e0;
 
-    /** sqrt(2)/2 */
-    public static final double SQRT_TWO_HALF = 7.07106781186547524401E-1;
+    /** The value of {@code sqrt(PI/2)} */
+    public static final double SQRT_PI_HALF = 1.2533141373155001e0;
 
-    /** ln(PI) */
+    /** The value of {@code sqrt(2)/2} */
+    public static final double SQRT_TWO_HALF = 7.07106781186547524401e-1;
+
+    /** The value of {@code ln(PI)} */
     public static final double LN_PI = 1.14472988584940017414; /* ln(PI) */
 
-    /** ln(10) */
+    /** The value of {@code ln2} */
+    public static final double LN_2 = 0.69314718055994530941; /* ln(2) */
+
+    /** The value of {@code ln(10)} */
     public static final double LN_10 = 2.302585092994046; /* ln(10) */
 
     public static final double BIG = 4.503599627370496e15;
@@ -54,7 +60,9 @@ public final class MathConsts {
     /** 5.218048215738236e-15 */
     public static final double MIN_TOL = (45.0 * MACH_EPS) + BIG_INV;
 
-    /** Largest int x such that 10^x is representable (approximately) as double */
+    /**
+     * Largest int x such that 10^x is representable (approximately) as double
+     */
     public static final int MAX_X_FOR_10_EXP_X_AS_DOUBLE = 308;
 
     private MathConsts() {
