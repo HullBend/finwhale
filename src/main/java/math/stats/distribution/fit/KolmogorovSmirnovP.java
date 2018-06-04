@@ -60,15 +60,15 @@ final class KolmogorovSmirnovP {
 
         // (frontier: asymptotic)
         if (n >= 200000) {
-            return KSPlusbarAsymp(n, x);
+            return kolmoSmirnovPlusBarAsymp(n, x);
         }
 
         // (frontier: non-alternating series)
         if ((n <= 4000) || (n * x * x > 1.0)) {
-            return KSPlusbarUpper(n, x);
+            return kolmoSmirnovPlusBarUpper(n, x);
         }
 
-        return KSPlusbarAsymp(n, x);
+        return kolmoSmirnovPlusBarAsymp(n, x);
     }
 
     /**
@@ -163,13 +163,13 @@ final class KolmogorovSmirnovP {
         return sum;
     }
 
-    static double KSPlusbarUpper(int n, double x) {
+    static double kolmoSmirnovPlusBarUpper(int n, double x) {
         /*
          * Compute the probability of the complementary KS+ distribution in the
          * upper tail using Smirnov's stable formula
          */
         if (n > 200000) {
-            return KSPlusbarAsymp(n, x);
+            return kolmoSmirnovPlusBarAsymp(n, x);
         }
 
         int jmax = (int) (n * (1.0 - x));
@@ -218,7 +218,7 @@ final class KolmogorovSmirnovP {
         return sum;
     }
 
-    private static double KSPlusbarAsymp(int n, double x) {
+    private static double kolmoSmirnovPlusBarAsymp(int n, double x) {
         /*
          * Compute the probability of the complementary KS+ distribution using
          * an asymptotic formula
