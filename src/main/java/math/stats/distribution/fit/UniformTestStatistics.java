@@ -63,6 +63,10 @@ public final class UniformTestStatistics {
          * Mean
          */
         public double MEAN = Double.NaN;
+        /**
+         * Number of observations
+         */
+        public int N = -1;
     }
 
     private static final double EPS = MathConsts.BIG_INV / 2.0;
@@ -134,6 +138,7 @@ public final class UniformTestStatistics {
         statistic.WU = w2 - sumZ * sumZ * n;
         statistic.AD = -n - a2 * share;
         statistic.MEAN = sumZ + 0.5;
+        statistic.N = n;
 
         return statistic;
     }
