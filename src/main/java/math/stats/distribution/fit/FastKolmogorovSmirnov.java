@@ -274,7 +274,7 @@ final class FastKolmogorovSmirnov {
                 if (kup > j) {
                     kup = j;
                 }
-                sum = 0;
+                sum = 0.0;
                 for (int k = kup; k >= klow; k--) {
                     sum += V[r1][k] * H[s][j - k];
                 }
@@ -399,8 +399,7 @@ final class FastKolmogorovSmirnov {
             }
         }
 
-        final int eH = 0;
-        mPower(H, eH, Q, pQ, m, n);
+        mPower(H, 0, Q, pQ, m, n);
         double s = Q[(k - 1) * m + k - 1];
 
         for (int i = 1; i <= n; i++) {
@@ -461,7 +460,8 @@ final class FastKolmogorovSmirnov {
         j = 0;
         while (j <= JMAX && FastMath.abs(term) > EPS * FastMath.abs(tom)) {
             double ti = j + 0.5;
-            term = 6 * z6 + 2 * z4 + PI2 * (2 * z4 - 5 * z2) * ti * ti + PI4 * (1 - 2 * z2) * ti * ti * ti * ti;
+            term = 6.0 * z6 + 2.0 * z4 + PI2 * (2.0 * z4 - 5.0 * z2) * ti * ti
+                    + PI4 * (1.0 - 2.0 * z2) * ti * ti * ti * ti;
             term *= FastMath.exp(-ti * ti * w);
             tom += term;
             j++;
@@ -485,8 +485,8 @@ final class FastKolmogorovSmirnov {
         while (j <= JMAX && FastMath.abs(term) > EPS * FastMath.abs(tom)) {
             double ti = j + 0.5;
             ti = ti * ti;
-            term = -30 * z6 - 90 * z6 * z2 + PI2 * (135 * z4 - 96 * z6) * ti + PI4 * (212 * z4 - 60 * z2) * ti * ti
-                    + PI2 * PI4 * ti * ti * ti * (5 - 30 * z2);
+            term = -30.0 * z6 - 90.0 * z6 * z2 + PI2 * (135.0 * z4 - 96.0 * z6) * ti
+                    + PI4 * (212.0 * z4 - 60.0 * z2) * ti * ti + PI2 * PI4 * ti * ti * ti * (5.0 - 30.0 * z2);
             term *= FastMath.exp(-ti * w);
             tom += term;
             j++;
@@ -498,7 +498,7 @@ final class FastKolmogorovSmirnov {
         j = 1;
         while (j <= JMAX && FastMath.abs(term) > EPS * FastMath.abs(tom)) {
             double ti = j * j;
-            term = (3 * PI2 * ti * z2 - PI4 * ti * ti) * FastMath.exp(-ti * w);
+            term = (3.0 * PI2 * ti * z2 - PI4 * ti * ti) * FastMath.exp(-ti * w);
             tom += term;
             j++;
         }
@@ -542,10 +542,9 @@ final class FastKolmogorovSmirnov {
     }
 
     private static void mMultiply(double[] A, double[] B, double[] C, int m) {
-        double s;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < m; j++) {
-                s = 0.0;
+                double s = 0.0;
                 for (int k = 0; k < m; k++) {
                     s += A[i * m + k] * B[k * m + j];
                 }
