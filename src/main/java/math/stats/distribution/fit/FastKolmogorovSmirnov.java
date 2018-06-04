@@ -32,6 +32,8 @@ import static math.MathConsts.SQRT_PI_HALF;
  * {@code Kolmogorov–Smirnov} test statistic {@code D_n} given an ordered sample
  * of {@code n} independent uniforms {@code U_i} over {@code (0,1)}.
  * <p>
+ * https://www.jstatsoft.org/article/view/v039i11
+ * <p>
  * https://en.wikipedia.org/wiki/Kolmogorov%E2%80%93Smirnov_test
  */
 final class FastKolmogorovSmirnov {
