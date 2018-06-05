@@ -294,6 +294,10 @@ public final class Arithmetic {
     };
     //@formatter:on
 
+    private static final int LF_LENGTH = longFactorials.length;
+    private static final int DF_LENGTH = doubleFactorials.length;
+    private static final int LENGTH_SUM = LF_LENGTH + DF_LENGTH;
+
     // Constants for Stirling approximation in logFactorial() and
     // stirlingCorrection()
     private static final double C0 = 9.18938533204672742e-01;
@@ -406,26 +410,22 @@ public final class Arithmetic {
 
     /**
      * Instantly returns the factorial <tt>k!</tt>.
+     * If {@code k >= 171} {@link Double#POSITIVE_INFINITY} is returned.
      * 
-     * @param k
-     *            must hold <tt>k &gt;= 0</tt>.
+     * @param k an integer >= 0
+     * @return the factorial of k
      */
     public static double factorial(final int k) {
         if (k < 0) {
             throw new IllegalArgumentException("k < 0: (k = " + k + ")");
         }
-
-        final int len1 = longFactorials.length;
-        if (k < len1) {
+        if (k < LF_LENGTH) {
             return longFactorials[k];
         }
-
-        final int len2 = doubleFactorials.length;
-        if (k < len1 + len2) {
-            return doubleFactorials[k - len1];
-        } else {
-            return Double.POSITIVE_INFINITY;
+        if (k < LENGTH_SUM) {
+            return doubleFactorials[k - LF_LENGTH];
         }
+        return Double.POSITIVE_INFINITY;
     }
 
     /**
@@ -515,34 +515,6 @@ public final class Arithmetic {
             return longFactorials[k];
         }
         throw new IllegalArgumentException("Overflow for k = " + k);
-    }
-
-    /**
-     * Computes {@code k!}. If {@code k >= 171} {@link Double#POSITIVE_INFINITY} is returned.
-     * 
-     * @param k
-     *           an integer >= 0
-     * 
-     * @return the factorial of k
-     */
-    public static double doubleFactorial(int k) {
-       if (k < 0) {
-          throw new IllegalArgumentException("Negative k = " + k);
-       }
-       if (k == 0) {
-          return 1.0;
-       }
-       if (k <= 20) {
-          long fac = 1L;
-          for (int i = 2; i <= k; ++i) {
-             fac *= i;
-          }
-          return fac;
-       } else if (k < 171) {
-          return doubleFactorials[k - 21];
-       } else {
-          return Double.POSITIVE_INFINITY;
-       }
     }
 
     /**
