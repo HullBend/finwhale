@@ -49,6 +49,50 @@ public final class GoodnessOfFit {
         return statistics;
     }
 
+    public static UniformTestStatistics.PValue computePValues(UniformTestStatistics.Result testStatistics) {
+        if (testStatistics == null) {
+            throw new IllegalArgumentException("testStatistics == null");
+        }
+        if (testStatistics.N < 1) {
+            throw new IllegalArgumentException(
+                    "testStatistics doesn't contain any observations (N = " + testStatistics.N + ")");
+        }
+        UniformTestStatistics.PValue pval = new UniformTestStatistics.PValue();
+        pval.N = testStatistics.N;
+        if (testStatistics.N == 1) {
+            pval.KSP_PVAL = testStatistics.KSP;
+            return pval;
+        }
+        if (!isBadNum(testStatistics.KSP)) {
+            // Kolmogorov-Smirnov+
+            // double p = KolmogorovSmirnovP.barF(testStatistics.N, testStatistics.KSP);
+            // pval.KSP_PVAL = p;
+        }
+        if (!isBadNum(testStatistics.KSM)) {
+            // Kolmogorov-Smirnov-
+            // double p = KolmogorovSmirnovP.barF(testStatistics.N, testStatistics.KSM);
+            // pval.KSM_PVAL = p;
+        }
+        if (!isBadNum(testStatistics.KS)) {
+            // Kolmogorov-Smirnov
+            double p = FastKolmogorovSmirnov.barF(testStatistics.N, testStatistics.KS);
+            pval.KS_PVAL = p;
+        }
+        if (!isBadNum(testStatistics.AD)) {
+            // Anderson-Darling
+            double p = AndersonDarling.barF(testStatistics.N, testStatistics.AD);
+            pval.AD_PVAL = p;
+        }
+        return pval;
+    }
+
+    private static boolean isBadNum(double value) {
+        if (Double.isNaN(value) || Double.isInfinite(value)) {
+            return true;
+        }
+        return false;
+    }
+
     private GoodnessOfFit() {
         throw new AssertionError();
     }
