@@ -26,7 +26,7 @@ import static math.MathConsts.*;
  * @author wolfgang.hoschek@cern.ch
  * @version 0.9, 22-Jun-99
  */
-public final class Gamma {
+public final class GammaFun {
 
     private static final double STIR[] = { 7.87311395793093628397E-4,
             -2.29549961613378126380E-4, -2.68132617805781232825E-3,
@@ -321,6 +321,6 @@ public final class Gamma {
         return y;
     }
 
-    private Gamma() {
+    private GammaFun() {
     }
 }

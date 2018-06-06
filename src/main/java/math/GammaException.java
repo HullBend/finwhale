@@ -16,7 +16,7 @@
 package math;
 
 /**
- * Runtime exception thrown from {@link Gamma} methods.
+ * Runtime exception thrown from {@link GammaFun} methods.
  */
 public final class GammaException extends ArithmeticException {
 

@@ -16,7 +16,7 @@
 package math;
 
 /**
- * Runtime exception thrown from {@link Beta} methods.
+ * Runtime exception thrown from {@link BetaFun} methods.
  */
 public final class BetaException extends ArithmeticException {
 

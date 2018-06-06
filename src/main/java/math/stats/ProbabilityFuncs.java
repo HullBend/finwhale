@@ -9,9 +9,9 @@ It is provided "as is" without expressed or implied warranty.
 package math.stats;
 
 import static math.MathConsts.*;
-import math.Beta;
+import math.BetaFun;
 import math.FastMath;
-import math.Gamma;
+import math.GammaFun;
 import math.Polynomial;
 
 /**
@@ -140,7 +140,7 @@ public final class ProbabilityFuncs {
      * 
      */
     public static double beta(final double a, final double b, final double x) {
-        return Beta.incompleteBeta(a, b, x);
+        return BetaFun.incompleteBeta(a, b, x);
     }
 
     /**
@@ -152,7 +152,7 @@ public final class ProbabilityFuncs {
      */
     public static double betaComplemented(final double a, final double b,
             final double x) {
-        return Beta.incompleteBeta(b, a, x);
+        return BetaFun.incompleteBeta(b, a, x);
     }
 
     /**
@@ -195,7 +195,7 @@ public final class ProbabilityFuncs {
         if (k == 0) {
             return FastMath.pow(1.0 - p, n - k);
         }
-        return Beta.incompleteBeta(n - k, k + 1, 1.0 - p);
+        return BetaFun.incompleteBeta(n - k, k + 1, 1.0 - p);
     }
 
     /**
@@ -239,7 +239,7 @@ public final class ProbabilityFuncs {
         if (k == 0) {
             return 1.0 - FastMath.pow(1.0 - p, n - k);
         }
-        return Beta.incompleteBeta(k + 1, n - k, p);
+        return BetaFun.incompleteBeta(k + 1, n - k, p);
     }
 
     /**
@@ -274,7 +274,7 @@ public final class ProbabilityFuncs {
         if (x < 0.0 || v < 1.0) {
             return 0.0;
         }
-        return Gamma.incompleteGamma(v / 2.0, x / 2.0);
+        return GammaFun.incompleteGamma(v / 2.0, x / 2.0);
     }
 
     /**
@@ -308,7 +308,7 @@ public final class ProbabilityFuncs {
         if (x < 0.0 || v < 1.0) {
             return 0.0;
         }
-        return Gamma.incompleteGammaComplement(v / 2.0, x / 2.0);
+        return GammaFun.incompleteGammaComplement(v / 2.0, x / 2.0);
     }
 
     /**
@@ -385,7 +385,7 @@ public final class ProbabilityFuncs {
         if (x < 0.0) {
             return 0.0;
         }
-        return Gamma.incompleteGamma(alpha, beta * x);
+        return GammaFun.incompleteGamma(alpha, beta * x);
     }
 
     /**
@@ -418,7 +418,7 @@ public final class ProbabilityFuncs {
         if (x < 0.0) {
             return 0.0;
         }
-        return Gamma.incompleteGammaComplement(b, a * x);
+        return GammaFun.incompleteGammaComplement(b, a * x);
     }
 
     /**
@@ -457,7 +457,7 @@ public final class ProbabilityFuncs {
         if (k < 0) {
             return 0.0;
         }
-        return Beta.incompleteBeta(n, k + 1, p);
+        return BetaFun.incompleteBeta(n, k + 1, p);
     }
 
     /**
@@ -495,7 +495,7 @@ public final class ProbabilityFuncs {
         if (k < 0) {
             return 0.0;
         }
-        return Beta.incompleteBeta(k + 1, n, 1.0 - p);
+        return BetaFun.incompleteBeta(k + 1, n, 1.0 - p);
     }
 
     /**
@@ -767,7 +767,7 @@ public final class ProbabilityFuncs {
         if (k < 0) {
             return 0.0;
         }
-        return Gamma.incompleteGammaComplement(k + 1, mean);
+        return GammaFun.incompleteGammaComplement(k + 1, mean);
     }
 
     /**
@@ -800,7 +800,7 @@ public final class ProbabilityFuncs {
         if (k < -1) {
             return 0.0;
         }
-        return Gamma.incompleteGamma(k + 1, mean);
+        return GammaFun.incompleteGamma(k + 1, mean);
     }
 
     /**
@@ -843,7 +843,7 @@ public final class ProbabilityFuncs {
             return 0.5;
         }
 
-        double cdf = 0.5 * Beta.incompleteBeta(0.5 * k, 0.5, k / (k + t * t));
+        double cdf = 0.5 * BetaFun.incompleteBeta(0.5 * k, 0.5, k / (k + t * t));
         if (t >= 0.0) {
             // fixes bug reported by
             // stefan.bentink@molgen.mpg.de

@@ -26,7 +26,7 @@ import static math.MathConsts.*;
  * @author wolfgang.hoschek@cern.ch
  * @version 0.9, 22-Jun-99
  */
-public final class Beta {
+public final class BetaFun {
 
     private static final double THRESHOLD = 3.0 * MACH_EPS;
 
@@ -43,17 +43,17 @@ public final class Beta {
      */
     public static double beta(final double alpha, final double beta) {
         double y = alpha + beta;
-        y = Gamma.gamma(y);
+        y = GammaFun.gamma(y);
         if (y == 0.0) {
             return 1.0;
         }
 
         if (alpha > beta) {
-            y = Gamma.gamma(alpha) / y;
-            y *= Gamma.gamma(beta);
+            y = GammaFun.gamma(alpha) / y;
+            y *= GammaFun.gamma(beta);
         } else {
-            y = Gamma.gamma(beta) / y;
-            y *= Gamma.gamma(alpha);
+            y = GammaFun.gamma(beta) / y;
+            y *= GammaFun.gamma(alpha);
         }
 
         return y;
@@ -63,8 +63,8 @@ public final class Beta {
      * Returns the natural logarithm of the beta function.
      */
     public static double lnBeta(final double alpha, final double beta) {
-        return Gamma.lnGamma(alpha) + Gamma.lnGamma(beta)
-                - Gamma.lnGamma(alpha + beta);
+        return GammaFun.lnGamma(alpha) + GammaFun.lnGamma(beta)
+                - GammaFun.lnGamma(alpha + beta);
     }
 
     /**
@@ -159,7 +159,7 @@ public final class Beta {
             t *= FastMath.pow(x_, a);
             t /= a;
             t *= w;
-            t *= Gamma.gamma(a + b) / (Gamma.gamma(a) * Gamma.gamma(b));
+            t *= GammaFun.gamma(a + b) / (GammaFun.gamma(a) * GammaFun.gamma(b));
             if (flag) {
                 if (t <= MACH_EPS) {
                     t = 1.0 - MACH_EPS;
@@ -171,7 +171,7 @@ public final class Beta {
         }
 
         /* Resort to logarithms */
-        y += t + Gamma.lnGamma(a + b) - Gamma.lnGamma(a) - Gamma.lnGamma(b);
+        y += t + GammaFun.lnGamma(a + b) - GammaFun.lnGamma(a) - GammaFun.lnGamma(b);
         y += Math.log(w / a);
         if (y < MIN_LOG) {
             t = 0.0;
@@ -222,10 +222,10 @@ public final class Beta {
         u = a * Math.log(x);
 
         if ((a + b) < MAX_GAMMA && Math.abs(u) < MAX_LOG) {
-            t = Gamma.gamma(a + b) / (Gamma.gamma(a) * Gamma.gamma(b));
+            t = GammaFun.gamma(a + b) / (GammaFun.gamma(a) * GammaFun.gamma(b));
             s = s * t * FastMath.pow(x, a);
         } else {
-            t = Gamma.lnGamma(a + b) - Gamma.lnGamma(a) - Gamma.lnGamma(b) + u
+            t = GammaFun.lnGamma(a + b) - GammaFun.lnGamma(a) - GammaFun.lnGamma(b) + u
                     + Math.log(s);
             if (t < MIN_LOG) {
                 s = 0.0;
@@ -400,6 +400,6 @@ public final class Beta {
         return ans;
     }
 
-    private Beta() {
+    private BetaFun() {
     }
 }
