@@ -28,6 +28,7 @@ import static math.MathConsts.*;
  */
 public final class GammaFun {
 
+    //@formatter:off
     private static final double STIR[] = { 7.87311395793093628397E-4,
             -2.29549961613378126380E-4, -2.68132617805781232825E-3,
             3.47222221605458667310E-3, 8.33333333333482257126E-2, };
@@ -58,6 +59,23 @@ public final class GammaFun {
             -1.70642106651881159223E4, -2.20528590553854454839E5,
             -1.13933444367982507207E6, -2.53252307177582951285E6,
             -2.01889141433532773231E6 };
+
+    private static final double DIGAMMA_C7[][] = {
+            {1.3524999667726346383e4, 4.5285601699547289655e4, 4.5135168469736662555e4,
+             1.8529011818582610168e4, 3.3291525149406935532e3, 2.4068032474357201831e2,
+             5.1577892000139084710, 6.2283506918984745826e-3},
+            {6.9389111753763444376e-7, 1.9768574263046736421e4, 4.1255160835353832333e4,
+               2.9390287119932681918e4, 9.0819666074855170271e3,
+               1.2447477785670856039e3, 6.7429129516378593773e1, 1.0}
+           };
+
+    private static final double DIGAMMA_C4[][] = {
+            {-2.728175751315296783e-15, -6.481571237661965099e-1, -4.486165439180193579,
+             -7.016772277667586642, -2.129404451310105168},
+            {7.777885485229616042, 5.461177381032150702e1,
+             8.929207004818613702e1, 3.227034937911433614e1, 1.0}
+           };
+    //@formatter:on
 
     /**
      * Returns the Gamma function of the argument.
@@ -319,6 +337,38 @@ public final class GammaFun {
         }
         y = SQRT_TWO_PI * y * w;
         return y;
+    }
+
+    /**
+     * Returns the value of the logarithmic derivative of the Gamma
+     * function {@code psi(x) = Gamma’(x) / Gamma(x)}.
+     */
+    public static double digamma(double x) {
+        if (Double.isNaN(x)) {
+            return Double.NaN;
+        }
+        double prodPj = 0.0;
+        double prodQj = 0.0;
+        double digX = 0.0;
+
+        if (x >= 3.0) {
+            double x2 = 1.0 / (x * x);
+            for (int j = 4; j >= 0; j--) {
+                prodPj = prodPj * x2 + DIGAMMA_C4[0][j];
+                prodQj = prodQj * x2 + DIGAMMA_C4[1][j];
+            }
+            digX = Math.log(x) - (0.5 / x) + (prodPj / prodQj);
+        } else if (x >= 0.5) {
+            for (int j = 7; j >= 0; j--) {
+                prodPj = x * prodPj + DIGAMMA_C7[0][j];
+                prodQj = x * prodQj + DIGAMMA_C7[1][j];
+            }
+            digX = (x - 1.46163214496836234126) * (prodPj / prodQj);
+        } else {
+            double f = (1.0 - x) - Math.floor(1.0 - x);
+            digX = digamma(1.0 - x) + Math.PI / FastMath.tan(Math.PI * f);
+        }
+        return digX;
     }
 
     private GammaFun() {
