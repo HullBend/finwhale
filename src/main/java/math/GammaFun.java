@@ -347,11 +347,10 @@ public final class GammaFun {
         if (Double.isNaN(x)) {
             return Double.NaN;
         }
-        double prodPj = 0.0;
-        double prodQj = 0.0;
         double digX = 0.0;
-
         if (x >= 3.0) {
+            double prodPj = 0.0;
+            double prodQj = 0.0;
             double x2 = 1.0 / (x * x);
             for (int j = 4; j >= 0; j--) {
                 prodPj = prodPj * x2 + DIGAMMA_C4[0][j];
@@ -359,6 +358,8 @@ public final class GammaFun {
             }
             digX = Math.log(x) - (0.5 / x) + (prodPj / prodQj);
         } else if (x >= 0.5) {
+            double prodPj = 0.0;
+            double prodQj = 0.0;
             for (int j = 7; j >= 0; j--) {
                 prodPj = x * prodPj + DIGAMMA_C7[0][j];
                 prodQj = x * prodQj + DIGAMMA_C7[1][j];
@@ -366,7 +367,7 @@ public final class GammaFun {
             digX = (x - 1.46163214496836234126) * (prodPj / prodQj);
         } else {
             double f = (1.0 - x) - Math.floor(1.0 - x);
-            digX = digamma(1.0 - x) + Math.PI / FastMath.tan(Math.PI * f);
+            digX = digamma(1.0 - x) + (Math.PI / FastMath.tan(Math.PI * f));
         }
         return digX;
     }
