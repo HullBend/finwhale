@@ -62,6 +62,9 @@ public final class MathConsts {
     /** 4.450147717014403e-308 */
     public static final double MIN_VAL = 2.0 * Double.MIN_NORMAL;
 
+    /** Natural logarithm of {@link Double#MIN_NORMAL} (-708.3964185322641) */
+    public static final double LN_MIN_NORMAL = -708.3964185322641;
+
     /** 5.218048215738236e-15 */
     public static final double MIN_TOL = (45.0 * MACH_EPS) + BIG_INV;
 
