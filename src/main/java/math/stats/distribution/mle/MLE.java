@@ -28,6 +28,8 @@ import math.function.DoubleUnaryOperator;
  */
 public final class MLE {
 
+    private static final double LN_EPS = MathConsts.LN_MIN_NORMAL - MathConsts.LN_2;
+
     private static final class GammaMLE implements DoubleUnaryOperator {
         private final int n;
         private final double empiricalMean;
@@ -62,7 +64,6 @@ public final class MLE {
             throw new IllegalArgumentException("No observations (x[].length = 0");
         }
 
-        double LN_EPS = MathConsts.LN_MIN_NORMAL - MathConsts.LN_2;
         double sum = 0.0;
         double sumLn = 0.0;
 
