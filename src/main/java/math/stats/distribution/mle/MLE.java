@@ -29,6 +29,7 @@ import math.function.DoubleUnaryOperator;
 public final class MLE {
 
     private static final double LN_EPS = MathConsts.LN_MIN_NORMAL - MathConsts.LN_2;
+    private static final String NO_OBS_MSG = "No observations (x[].length = 0)";
 
     private static final class GammaMLE implements DoubleUnaryOperator {
         private final int n;
@@ -61,7 +62,7 @@ public final class MLE {
     public static ParGamma getGammaMLE(double[] x) {
         int n = x.length;
         if (n == 0) {
-            throw new IllegalArgumentException("No observations (x[].length = 0");
+            throw new IllegalArgumentException(NO_OBS_MSG);
         }
 
         double sum = 0.0;
@@ -94,6 +95,49 @@ public final class MLE {
         ParGamma params = new ParGamma();
         params.shape = RootFinder.brentDekker(left, right, new GammaMLE(n, empiricalMean, sumLn), 1e-7);
         params.scale = empiricalMean / params.shape;
+
+        return params;
+    }
+
+    /**
+     * Estimates the parameters &mu; and &sigma; of the LogNormal distribution
+     * from the observations {@code x} using the maximum likelihood method.
+     * 
+     * @param x
+     *            the list of observations used to evaluate parameters
+     * @return returns the parameters &mu; and &sigma;
+     */
+    public static ParLogNormal getLogNormalMLE(double[] x) {
+        int n = x.length;
+        if (n == 0) {
+            throw new IllegalArgumentException(NO_OBS_MSG);
+        }
+
+        double sum = 0.0;
+        for (int i = 0; i < n; i++) {
+            if (x[i] > 0.0) {
+                sum += Math.log(x[i]);
+            } else {
+                sum += LN_EPS; // log(MIN_NORMAL / 2)
+            }
+        }
+
+        double mu_hat = sum / n;
+        double tmp;
+        sum = 0.0;
+
+        for (int i = 0; i < n; i++) {
+            if (x[i] > 0.0) {
+                tmp = Math.log(x[i]) - mu_hat;
+            } else {
+                tmp = LN_EPS - mu_hat;
+            }
+            sum += (tmp * tmp);
+        }
+
+        ParLogNormal params = new ParLogNormal();
+        params.mu = mu_hat;
+        params.sigma = Math.sqrt(sum / n);
 
         return params;
     }
