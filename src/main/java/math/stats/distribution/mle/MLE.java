@@ -18,6 +18,7 @@
  */
 package math.stats.distribution.mle;
 
+import math.FastMath;
 import math.GammaFun;
 import math.MathConsts;
 import math.RootFinder;
@@ -51,9 +52,47 @@ public final class MLE {
         }
     }
 
+    private static final class WeibullMLE implements DoubleUnaryOperator {
+        private final double xi[];
+        private final double lnXi[];
+        private double sumLnXi = 0.0;
+
+        WeibullMLE(double x[]) {
+            this.xi = x.clone();
+            this.lnXi = new double[x.length];
+            for (int i = 0; i < x.length; i++) {
+                double lnx;
+                if (x[i] > 0.0) {
+                    lnx = Math.log(x[i]);
+                    lnXi[i] = lnx;
+                } else {
+                    lnx = LN_EPS;
+                    lnXi[i] = lnx;
+                }
+                sumLnXi += lnx;
+            }
+        }
+
+        @Override
+        public double applyAsDouble(double x) {
+            if (x <= 0.0) {
+                return 1.0e200;
+            }
+            double sumXiLnXi = 0.0;
+            double sumXi = 0.0;
+            for (int i = 0; i < xi.length; i++) {
+                double xalpha = FastMath.pow(xi[i], x);
+                sumXiLnXi += xalpha * lnXi[i];
+                sumXi += xalpha;
+            }
+            return (x * (xi.length * sumXiLnXi - sumLnXi * sumXi) - xi.length * sumXi);
+        }
+    }
+
     /**
-     * Estimates the parameters {@code k} and &theta; of the Gamma distribution
-     * from the observations {@code x} using the maximum likelihood method.
+     * Estimates the parameters {@code shape} ({@code k}) and {@code scale}
+     * (&theta;) of the Gamma distribution from the observations {@code x} using
+     * the maximum likelihood method.
      * 
      * @param x
      *            the list of observations to use to evaluate parameters
@@ -104,7 +143,7 @@ public final class MLE {
      * from the observations {@code x} using the maximum likelihood method.
      * 
      * @param x
-     *            the list of observations used to evaluate parameters
+     *            the list of observations to use to evaluate parameters
      * @return returns the parameters &mu; and &sigma;
      */
     public static ParLogNormal getLogNormalMLE(double[] x) {
@@ -139,6 +178,58 @@ public final class MLE {
         params.mu = mu_hat;
         params.sigma = Math.sqrt(sum / n);
 
+        return params;
+    }
+
+    /**
+     * Estimates the parameters {@code scale} (&lambda;) and {@code shape}
+     * ({@code k}) of the Weibull distribution from the observations {@code x}
+     * using the maximum likelihood method.
+     * 
+     * @param x
+     *            the list of observations to use to evaluate parameters
+     * @return returns the parameters &lambda; and {@code k}
+     */
+    public static ParWeibull getWeibullMLE(double[] x) {
+        int n = x.length;
+        if (n == 0) {
+            throw new IllegalArgumentException(NO_OBS_MSG);
+        }
+
+        double sumLn = 0.0;
+        double sumLn2 = 0.0;
+
+        for (int i = 0; i < x.length; i++) {
+            double lnxi;
+            if (x[i] <= 0.0) {
+                lnxi = LN_EPS;
+            } else {
+                lnxi = Math.log(x[i]);
+            }
+            sumLn += lnxi;
+            sumLn2 += (lnxi * lnxi);
+        }
+
+        double alpha0 = Math.sqrt((double) n / ((6.0 / MathConsts.PI_SQUARED) * (sumLn2 - sumLn * sumLn / (double) n)));
+        // left endpoint of initial interval
+        double left = alpha0 - 20.0;
+        if (left <= 0.0) {
+            left = 1.0e-5;
+        }
+        // right endpoint of initial interval
+        double right = alpha0 + 20.0;
+
+        double k = RootFinder.brentDekker(left, right, new WeibullMLE(x), 1e-5);
+
+        double sumXalpha = 0.0;
+        for (int i = 0; i < x.length; i++) {
+            sumXalpha += FastMath.pow(x[i], k);
+        }
+        double scale = 1.0 / (FastMath.pow((double) n / sumXalpha, 1.0 / k));
+
+        ParWeibull params = new ParWeibull();
+        params.shape = k;
+        params.scale = scale;
         return params;
     }
 
