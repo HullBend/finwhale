@@ -59,13 +59,16 @@ public final class MathConsts {
     /** 2.22044604925031308085e-16 */
     public static final double BIG_INV = 2.22044604925031308085e-16;
 
-    /** 4.450147717014403e-308 */
+    /** 4.450147717014403e-308 (equals 2 x {@link Double#MIN_NORMAL}) */
     public static final double MIN_VAL = 2.0 * Double.MIN_NORMAL;
 
     /** Natural logarithm of {@link Double#MIN_NORMAL} (-708.3964185322641) */
     public static final double LN_MIN_NORMAL = -708.3964185322641;
 
-    /** 5.218048215738236e-15 */
+    /**
+     * 5.218048215738236e-15 (equals (45 x {@link #MACH_EPS}) +
+     * {@link #BIG_INV})
+     */
     public static final double MIN_TOL = (45.0 * MACH_EPS) + BIG_INV;
 
     /**
