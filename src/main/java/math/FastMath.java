@@ -30,23 +30,12 @@ import java.util.Random;
  */
 public final class FastMath {
 
-    /**
+    /*
      * Don't let anyone instantiate this class.
      */
     private FastMath() {
+        throw new AssertionError(); 
     }
-
-    /**
-     * The {@code double} value that is closer than any other to <i>e</i>, the
-     * base of the natural logarithms.
-     */
-    public static final double E = Math.E;
-
-    /**
-     * The {@code double} value that is closer than any other to <i>pi</i>, the
-     * ratio of the circumference of a circle to its diameter.
-     */
-    public static final double PI = Math.PI;
 
     /**
      * Returns the trigonometric sine of an angle. Special cases:
