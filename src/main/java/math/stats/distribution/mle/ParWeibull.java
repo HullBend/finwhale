@@ -22,7 +22,7 @@ import math.stats.distribution.Weibull;
  */
 public final class ParWeibull {
     /** &lambda; */
-    public double scale;
+    public double scale = Double.NaN;
     /** {@code k} */
-    public double shape;
+    public double shape = Double.NaN;
 }
