@@ -58,8 +58,9 @@ public final class MLE {
         private double sumLnXi = 0.0;
 
         WeibullMLE(double x[]) {
-            this.xi = x.clone();
-            this.lnXi = new double[x.length];
+            xi = x.clone();
+            lnXi = new double[x.length];
+
             for (int i = 0; i < x.length; i++) {
                 double lnx;
                 if (x[i] > 0.0) {
@@ -85,7 +86,7 @@ public final class MLE {
                 sumXiLnXi += xalpha * lnXi[i];
                 sumXi += xalpha;
             }
-            return (x * (xi.length * sumXiLnXi - sumLnXi * sumXi) - xi.length * sumXi);
+            return x * (xi.length * sumXiLnXi - sumLnXi * sumXi) - (xi.length * sumXi);
         }
     }
 
