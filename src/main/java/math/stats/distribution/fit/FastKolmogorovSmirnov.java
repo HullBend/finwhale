@@ -26,6 +26,7 @@ import math.Arithmetic;
 import math.FastMath;
 import math.MathConsts;
 import static math.MathConsts.SQRT_PI_HALF;
+import static math.MathConsts.PI_SQUARED;
 
 /**
  * Methods for the two-sided *Kolmogorov–Smirnov* distribution of the
@@ -39,6 +40,9 @@ import static math.MathConsts.SQRT_PI_HALF;
 final class FastKolmogorovSmirnov {
 
     private static final int NEXACT = 500;
+
+    private static final double PI2 = PI_SQUARED;
+    private static final double PI4 = PI2 * PI2;
 
     // for the Durbin matrix algorithm
     private static final double NORM = 1.0e140;
@@ -430,8 +434,6 @@ final class FastKolmogorovSmirnov {
         final double z2 = z * z;
         final double z4 = z2 * z2;
         final double z6 = z4 * z2;
-        final double PI2 = Math.PI * Math.PI;
-        final double PI4 = PI2 * PI2;
         final double w = PI2 / (2.0 * z * z);
 
         int j = 0;
