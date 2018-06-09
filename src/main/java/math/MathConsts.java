@@ -44,7 +44,7 @@ public final class MathConsts {
     /** The value of {@code sqrt(2)/2} */
     public static final double SQRT_TWO_HALF = 7.07106781186547524401e-1;
 
-    /** The value of {@code Math.PI * Math.PI} */
+    /** The value of {@code Math.PI * Math.PI} (9.869604401089358) */
     public static final double PI_SQUARED = Math.PI * Math.PI;
 
     /** The value of {@code ln(PI)} */
