@@ -21,8 +21,8 @@ import math.stats.distribution.Gamma;
  * MLE for the parameters of the {@link Gamma} distribution.
  */
 public final class ParGamma {
-    /** k */
+    /** {@code k} */
     public double shape = Double.NaN;
-    /** theta */
+    /** &theta; */
     public double scale = Double.NaN;
 }

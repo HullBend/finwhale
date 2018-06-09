@@ -21,8 +21,8 @@ import math.stats.distribution.LogNormal;
  * MLE for the parameters of the {@link LogNormal} distribution.
  */
 public final class ParLogNormal {
-    /** mu */
+    /** &mu; */
     public double mu = Double.NaN;
-    /** sigma */
+    /** &sigma; */
     public double sigma = Double.NaN;
 }
