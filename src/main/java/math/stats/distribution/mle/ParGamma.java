@@ -22,7 +22,7 @@ import math.stats.distribution.Gamma;
  */
 public final class ParGamma {
     /** k */
-    public double shape;
+    public double shape = Double.NaN;
     /** theta */
-    public double scale;
+    public double scale = Double.NaN;
 }
