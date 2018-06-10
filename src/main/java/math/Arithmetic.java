@@ -549,8 +549,17 @@ public final class Arithmetic {
         return false;
     }
 
+    /**
+     * Checks whether the passed {@code value} qualifies as a probability, i.e.,
+     * whether it fulfills {@code 0.0 <= value <= 1.0}.
+     * 
+     * @param value
+     *            the double to check
+     * @return {@code true} when {@code value} lies within {@code [0, 1]},
+     *         otherwise {@code false}
+     */
     public static boolean isProbability(double value) {
-        return !isBadNum(value) && (value >= 0.0 && value <= 1.0);
+        return value >= 0.0 && value <= 1.0;
     }
 
     private Arithmetic() {
