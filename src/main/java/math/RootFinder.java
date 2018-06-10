@@ -24,7 +24,7 @@ package math;
 import math.function.DoubleUnaryOperator;
 
 /**
- * TODO
+ * Provides methods to find the root of a non-linear equation.
  */
 public final class RootFinder {
 
