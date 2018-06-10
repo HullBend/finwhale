@@ -25,15 +25,19 @@ import java.util.Arrays;
 import math.stats.distribution.ContinuousDistribution;
 
 /**
- * TODO
+ * Provides methods for the computation of goodness of fit tests
+ * (Anderson-Darling and Kolomogorov-Smirnov).
  */
 public final class GoodnessOfFit {
 
     /**
-     * TODO
+     * Computes a goodness of fit test {@link UniformTestStatistics.Result} for
+     * the given data and the postulated model distribution.
      * 
      * @param observations
+     *            the list of observations to explore
      * @param distribution
+     *            the hypothesized distribution of the empirical data
      * @return the {@link UniformTestStatistics.Result} for the given
      *         observations and distribution
      */
@@ -49,6 +53,15 @@ public final class GoodnessOfFit {
         return statistics;
     }
 
+    /**
+     * Computes the Anderson-Darling and Kolomogorov-Smirnov tests' p-values for
+     * the given test statistics.
+     * 
+     * @param testStatistics
+     *            the the {@link UniformTestStatistics.Result} to examine
+     * @return the {@link UniformTestStatistics.PValue} for the given test
+     *         statistics
+     */
     public static UniformTestStatistics.PValue computePValues(UniformTestStatistics.Result testStatistics) {
         if (testStatistics == null) {
             throw new IllegalArgumentException("testStatistics == null");
