@@ -542,6 +542,13 @@ public final class Arithmetic {
         }
     }
 
+    public static boolean isBadNum(double value) {
+        if (Double.isNaN(value) || Double.isInfinite(value)) {
+            return true;
+        }
+        return false;
+    }
+
     private Arithmetic() {
     }
 }

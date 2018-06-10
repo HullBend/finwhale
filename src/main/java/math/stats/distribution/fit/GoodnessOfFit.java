@@ -22,6 +22,7 @@ package math.stats.distribution.fit;
 
 import java.util.Arrays;
 
+import math.Arithmetic;
 import math.stats.distribution.ContinuousDistribution;
 
 /**
@@ -76,34 +77,27 @@ public final class GoodnessOfFit {
             pval.KSP_PVAL = testStatistics.KSP;
             return pval;
         }
-        if (!isBadNum(testStatistics.KSP)) {
+        if (!Arithmetic.isBadNum(testStatistics.KSP)) {
             // Kolmogorov-Smirnov+
             // double p = KolmogorovSmirnovP.barF(testStatistics.N, testStatistics.KSP);
             // pval.KSP_PVAL = p;
         }
-        if (!isBadNum(testStatistics.KSM)) {
+        if (!Arithmetic.isBadNum(testStatistics.KSM)) {
             // Kolmogorov-Smirnov-
             // double p = KolmogorovSmirnovP.barF(testStatistics.N, testStatistics.KSM);
             // pval.KSM_PVAL = p;
         }
-        if (!isBadNum(testStatistics.KS)) {
+        if (!Arithmetic.isBadNum(testStatistics.KS)) {
             // Kolmogorov-Smirnov
             double p = FastKolmogorovSmirnov.barF(testStatistics.N, testStatistics.KS);
             pval.KS_PVAL = p;
         }
-        if (!isBadNum(testStatistics.AD)) {
+        if (!Arithmetic.isBadNum(testStatistics.AD)) {
             // Anderson-Darling
             double p = AndersonDarling.barF(testStatistics.N, testStatistics.AD);
             pval.AD_PVAL = p;
         }
         return pval;
-    }
-
-    private static boolean isBadNum(double value) {
-        if (Double.isNaN(value) || Double.isInfinite(value)) {
-            return true;
-        }
-        return false;
     }
 
     private GoodnessOfFit() {
