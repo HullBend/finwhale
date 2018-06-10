@@ -15,20 +15,27 @@
  */
 package math.stats.distribution.mle;
 
-import math.Arithmetic;
 import math.stats.ValidatedValue;
 import math.stats.distribution.StudentT;
 
 /**
- * MLE for the parameter of the {@link StudentT} distribution.
+ * MLE for the parameter of a {@link StudentT} distribution. Note that we allow
+ * for double-valued degrees of freedom. However, {@link #df} must be
+ * {@code > 0.0} to be considered valid.
  */
 public final class ParStudentT implements ValidatedValue {
 
     /** degrees of freedom (&nu;) */
     public double df = Double.NaN;
 
+    /**
+     * A {@link StudentT} &nu; (degrees of freedom) parameter is considered
+     * valid in this implementation if &nu; {@code > 0.0}. You'll have to
+     * {@link Math#round(double)} and ensure that {@code df >= 1} yourself if
+     * you need an integer-valued estimator.
+     */
     @Override
     public boolean isValid() {
-        return !Arithmetic.isBadNum(df);
+        return df > 0.0;
     }
 }

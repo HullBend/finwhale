@@ -18,6 +18,7 @@
  */
 package math.stats.distribution.mle;
 
+import math.FastGamma;
 import math.FastMath;
 import math.GammaFun;
 import math.MathConsts;
@@ -31,6 +32,7 @@ import math.function.DoubleUnaryOperator;
 public final class MLE {
 
     private static final double LN_EPS = MathConsts.LN_MIN_NORMAL - MathConsts.LN_2;
+    private static final double HUGE = 1.0e200;
     private static final String NO_OBS_MSG = "No observations (x[].length = 0)";
 
     private static final class GammaMLE implements DoubleUnaryOperator {
@@ -47,7 +49,7 @@ public final class MLE {
         @Override
         public double applyAsDouble(double x) {
             if (x <= 0.0) {
-                return 1.0e200;
+                return HUGE;
             }
             return (n * Math.log(empiricalMean / x) + n * GammaFun.digamma(x) - sumLn);
         }
@@ -78,7 +80,7 @@ public final class MLE {
         @Override
         public double applyAsDouble(double x) {
             if (x <= 0.0) {
-                return 1.0e200;
+                return HUGE;
             }
             double sumXiLnXi = 0.0;
             double sumXi = 0.0;
@@ -88,6 +90,32 @@ public final class MLE {
                 sumXi += xalpha;
             }
             return x * (xi.length * sumXiLnXi - sumLnXi * sumXi) - (xi.length * sumXi);
+        }
+    }
+
+    private static final class StudentTMLE implements DoubleUnaryOperator {
+        private final double[] xi;
+
+        StudentTMLE(double[] x) {
+            xi = x.clone();
+        }
+
+        @Override
+        public double applyAsDouble(double df) {
+            if (df <= 0.0) {
+                return HUGE;
+            }
+            double sum = 0.0;
+            for (int i = 0; i < xi.length; i++) {
+                sum += Math.log(pdf(df, xi[i]));
+            }
+            return sum;
+        }
+
+        private static double pdf(double df, double x) {
+            double tmp = FastGamma.logGamma((df + 1.0) / 2.0) - FastGamma.logGamma(df / 2.0);
+            double pdfConst = FastMath.exp(tmp) / Math.sqrt(Math.PI * df);
+            return pdfConst * FastMath.pow((1.0 + x * x / df), -(df + 1.0) * 0.5);
         }
     }
 
@@ -233,6 +261,62 @@ public final class MLE {
         params.shape = k;
         params.scale = scale;
         return params;
+    }
+
+    /**
+     * Estimates the parameter &mu; (degrees of freedom) of the StudentT
+     * distribution from the observations {@code x} using the maximum likelihood
+     * method. Note that this implementation allows for double-valued
+     * estimators.
+     * 
+     * @param x
+     *            the list of observations to use to evaluate parameters
+     * @return returns the parameter &mu;
+     */
+    public static ParStudentT getStudentTMLE(double[] x) {
+        int n = x.length;
+        if (n == 0) {
+            throw new IllegalArgumentException(NO_OBS_MSG);
+        }
+
+        double var = 0.0;
+        for (int i = 0; i < x.length; i++) {
+            var += (x[i] * x[i]);
+        }
+        var /= (double) n;
+
+        StudentTMLE f = new StudentTMLE(x);
+
+        double n0 = (2.0 * var) / (var - 1.0);
+        double fn0 = f.applyAsDouble(n0);
+
+        double min = fn0;
+        double fna = f.applyAsDouble(n0 - 1.0);
+        double fnb = f.applyAsDouble(n0 + 1.0);
+
+        double df_est = n0;
+
+        if (fna > fn0) {
+            double mu = n0 - 1.0;
+            double y;
+            while (((y = f.applyAsDouble(mu)) > min) && (mu >= 1.0)) {
+                min = y;
+                df_est = mu;
+                mu -= 1.0;
+            }
+        } else if (fnb > fn0) {
+            double mu = n0 + 1.0;
+            double y;
+            while ((y = f.applyAsDouble(mu)) > min) {
+                min = y;
+                df_est = mu;
+                mu += 1.0;
+            }
+        }
+
+        ParStudentT param = new ParStudentT();
+        param.df = df_est;
+        return param;
     }
 
     private MLE() {
