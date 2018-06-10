@@ -20,7 +20,9 @@
  */
 package math.stats.distribution.fit;
 
+import math.Arithmetic;
 import math.MathConsts;
+import math.stats.ValidatedValue;
 
 /**
  * TODO
@@ -30,7 +32,7 @@ public final class UniformTestStatistics {
     /**
      * TODO
      */
-    public static final class Result {
+    public static final class Result implements ValidatedValue {
         /**
          * Kolmogorov-Smirnov+ test statistic
          */
@@ -68,6 +70,14 @@ public final class UniformTestStatistics {
          */
         public int N = -1;
 
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean isValid() {
+            return N > 0 && !(Arithmetic.isBadNum(KS) || Arithmetic.isBadNum(AD));
+        }
+
         public String toString() {
             StringBuilder b = new StringBuilder(256);
             b.append("\r\n");
@@ -87,7 +97,7 @@ public final class UniformTestStatistics {
     /**
      * TODO
      */
-    public static final class PValue {
+    public static final class PValue implements ValidatedValue {
         /**
          * Kolmogorov-Smirnov+ test p-value
          */
@@ -108,6 +118,14 @@ public final class UniformTestStatistics {
          * Number of observations
          */
         public int N = -1;
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean isValid() {
+            return N > 0 && Arithmetic.isProbability(KS_PVAL) && Arithmetic.isProbability(AD_PVAL);
+        }
 
         public String toString() {
             String ksp = "KolmogorovSmirnovPlus  p-value: " + KSP_PVAL;

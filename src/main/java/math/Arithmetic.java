@@ -549,6 +549,10 @@ public final class Arithmetic {
         return false;
     }
 
+    public static boolean isProbability(double value) {
+        return !isBadNum(value) && (value >= 0.0 && value <= 1.0);
+    }
+
     private Arithmetic() {
     }
 }
