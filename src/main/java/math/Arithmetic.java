@@ -542,6 +542,17 @@ public final class Arithmetic {
         }
     }
 
+    /**
+     * Checks whether the passed {@code value} is one of {@link Double#NaN},
+     * {@link Double#NEGATIVE_INFINITY} or {@link Double#POSITIVE_INFINITY}.
+     * Returns {@code true} if this is the case, otherwise returns
+     * {@code false}.
+     * 
+     * @param value
+     *            the double to check
+     * @return {@code true} when {@code value} is finite and not
+     *         {@link Double#NaN}, {@code false} in all other cases
+     */
     public static boolean isBadNum(double value) {
         if (Double.isNaN(value) || Double.isInfinite(value)) {
             return true;
