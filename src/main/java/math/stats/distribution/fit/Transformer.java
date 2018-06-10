@@ -22,8 +22,26 @@ package math.stats.distribution.fit;
 
 import math.stats.distribution.ContinuousDistribution;
 
+/**
+ * Transformation of empirical observations to {@code (0, 1)} interval.
+ */
 final class Transformer {
 
+    /**
+     * Apply the {@link ContinuousDistribution#cdf(double)} method of the given
+     * {@code dist} to the data in {@code observations}. This transforms the
+     * data to a {@code (0, 1)} interval. If the hypothesized {@code dist} fits
+     * the data in {@code observations} then the resulting transformed data
+     * should be roughly uniformly distributed on {@code (0, 1)}.
+     * 
+     * @param observations
+     *            the empirical data to transform
+     * @param dist
+     *            the distribution to use for the transformation
+     * @return data transformed to the {@code (0, 1)} interval. If the
+     *         hypothesized distribution describes the observations then the
+     *         transformed data is approximately uniformly distributed
+     */
     static double[] uniform(double[] observations, ContinuousDistribution dist) {
         if (dist == null) {
             throw new IllegalArgumentException("dist == null");
