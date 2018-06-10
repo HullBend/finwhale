@@ -15,14 +15,21 @@
  */
 package math.stats.distribution.mle;
 
+import math.Arithmetic;
+import math.stats.ValidatedValue;
 import math.stats.distribution.LogNormal;
 
 /**
  * MLE for the parameters of the {@link LogNormal} distribution.
  */
-public final class ParLogNormal {
+public final class ParLogNormal implements ValidatedValue {
     /** &mu; */
     public double mu = Double.NaN;
     /** &sigma; */
     public double sigma = Double.NaN;
+
+    @Override
+    public boolean isValid() {
+        return !(Arithmetic.isBadNum(mu) || Arithmetic.isBadNum(sigma));
+    }
 }

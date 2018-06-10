@@ -13,23 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package math.stats.distribution.mle;
-
-import math.Arithmetic;
-import math.stats.ValidatedValue;
-import math.stats.distribution.Weibull;
+package math.stats;
 
 /**
- * MLE for the parameters of the {@link Weibull} distribution.
+ * Generic validation appliance.
  */
-public final class ParWeibull implements ValidatedValue {
-    /** &lambda; */
-    public double scale = Double.NaN;
-    /** {@code k} */
-    public double shape = Double.NaN;
-
-    @Override
-    public boolean isValid() {
-        return !(Arithmetic.isBadNum(scale) || Arithmetic.isBadNum(shape));
-    }
+public interface ValidatedValue {
+    /**
+     * Is this a valid value according to whatever rules apply for an entity of
+     * this value's type?
+     * 
+     * @return {@code true} if yes, otherwise {@code false}
+     */
+    boolean isValid();
 }

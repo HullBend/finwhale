@@ -15,14 +15,21 @@
  */
 package math.stats.distribution.mle;
 
+import math.Arithmetic;
+import math.stats.ValidatedValue;
 import math.stats.distribution.Gamma;
 
 /**
  * MLE for the parameters of the {@link Gamma} distribution.
  */
-public final class ParGamma {
+public final class ParGamma implements ValidatedValue {
     /** {@code k} */
     public double shape = Double.NaN;
     /** &theta; */
     public double scale = Double.NaN;
+
+    @Override
+    public boolean isValid() {
+        return !(Arithmetic.isBadNum(shape) || Arithmetic.isBadNum(scale));
+    }
 }
