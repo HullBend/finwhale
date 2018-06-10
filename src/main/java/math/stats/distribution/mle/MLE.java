@@ -25,7 +25,8 @@ import math.RootFinder;
 import math.function.DoubleUnaryOperator;
 
 /**
- * TODO
+ * Provides methods for maximum likelihood estimation of distribution
+ * parameters.
  */
 public final class MLE {
 
