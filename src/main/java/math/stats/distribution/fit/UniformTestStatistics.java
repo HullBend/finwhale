@@ -25,12 +25,21 @@ import math.MathConsts;
 import math.stats.ValidatedValue;
 
 /**
- * TODO
+ * Summary classes for values associated with goodness of fit tests.
+ * {@link Result} summarizes the values of several test statistics (mainly the
+ * Anderson-Darling {@link Result#AD} and Kolomogorov-Smirnov {@link Result#KS}
+ * test statistics). {@link PValue} summarizes the p-values
+ * ({@link PValue#AD_PVAL} for Anderson-Darling and {@link PValue#KS_PVAL} for
+ * Kolmogorov-Smirnov) for a given test statistic.
  */
 public final class UniformTestStatistics {
 
     /**
-     * TODO
+     * {@link #AD} contains the value of the Anderson-Darling test statistic.
+     * {@link #KS} contains the value of the Kolmogorov-Smirnov test statistic.
+     * If a statistic couldn't be computed or wasn't computed it contains the
+     * value {@link Double#NaN} (which is also the initialization value for all
+     * members of this class).
      */
     public static final class Result implements ValidatedValue {
         /**
@@ -78,6 +87,10 @@ public final class UniformTestStatistics {
             return N > 0 && !(Arithmetic.isBadNum(KS) || Arithmetic.isBadNum(AD));
         }
 
+        /**
+         * {@inheritDoc}
+         */
+        @Override
         public String toString() {
             StringBuilder b = new StringBuilder(256);
             b.append("\r\n");
@@ -95,7 +108,11 @@ public final class UniformTestStatistics {
     }
 
     /**
-     * TODO
+     * {@link #AD_PVAL} contains the p-value for the Anderson-Darling test.
+     * {@link #KS_PVAL} contains the p-value for the Kolmogorov-Smirnov test. If
+     * a p-value couldn't be computed or wasn't computed it contains the value
+     * {@link Double#NaN} (which is also the initialization value for all
+     * members of this class).
      */
     public static final class PValue implements ValidatedValue {
         /**
@@ -127,9 +144,13 @@ public final class UniformTestStatistics {
             return N > 0 && Arithmetic.isProbability(KS_PVAL) && Arithmetic.isProbability(AD_PVAL);
         }
 
+        /**
+         * {@inheritDoc}
+         */
+        @Override
         public String toString() {
-            String ksp = "KolmogorovSmirnovPlus  p-value: " + KSP_PVAL;
-            String ksm = "KolmogorovSmirnovMinus p-value: " + KSM_PVAL;
+            // String ksp = "KolmogorovSmirnovPlus  p-value: " + KSP_PVAL;
+            // String ksm = "KolmogorovSmirnovMinus p-value: " + KSM_PVAL;
             String ks = "KolmogorovSmirnov      p-value: " + KS_PVAL;
             String ad = "Anderson-Darling       p-value: " + AD_PVAL;
             String size = "Sample size                 : " + N;
@@ -147,7 +168,9 @@ public final class UniformTestStatistics {
     private static final double EPS = MathConsts.BIG_INV / 2.0;
 
     /**
-     * TODO
+     * Computes the {@link UniformTestStatistics.Result} for a sorted array of
+     * observations assuming they are IID Uniform distributed over
+     * {@code (0,1)}.
      * 
      * @param obs
      *            <b>sorted (!)</b> array of observations
