@@ -75,6 +75,18 @@ public final class GammaFun {
             {7.777885485229616042, 5.461177381032150702e1,
              8.929207004818613702e1, 3.227034937911433614e1, 1.0}
            };
+
+    /* Chebyshev coefficients for trigamma (x + 3), 0 <= x <= 1. In Yudell
+       Luke: The special functions and their approximations, Vol. II,
+       Academic Press, p. 301, 1969. */
+    private static final int TRIGAMMA_N = 15;
+
+    private static final double TRIGAMMA_A[] = { 2.0 * 0.33483869791094938576,
+            -0.05518748204873009463, 0.00451019073601150186, -0.00036570588830372083,
+            2.943462746822336e-5, -2.35277681515061e-6, 1.8685317663281e-7,
+            -1.475072018379e-8, 1.15799333714e-9, -9.043917904e-11,
+            7.029627e-12, -5.4398873e-13, 0.4192525e-13, -3.21903e-15, 0.2463e-15,
+            -1.878e-17, 0.0, 0.0 };
     //@formatter:on
 
     /**
@@ -370,6 +382,50 @@ public final class GammaFun {
             digX = digamma(1.0 - x) + (Math.PI / FastMath.tan(Math.PI * f));
         }
         return digX;
+    }
+
+    /**
+     * Returns the value of the trigamma function {@code d(psi(x))/dx}, the
+     * derivative of the {@link #digamma(double)} function, evaluated at
+     * {@code x}.
+     */
+    public static double trigamma(double x) {
+        if (Double.isNaN(x)) {
+            return Double.NaN;
+        }
+
+        double y;
+        double sum;
+
+        if (x < 0.5) {
+            y = (1.0 - x) - Math.floor(1.0 - x);
+            sum = Math.PI / FastMath.sin(Math.PI * y);
+            return (sum * sum) - trigamma(1.0 - x);
+        }
+
+        if (x >= 40.0) {
+            // asymptotic series
+            y = 1.0 / (x * x);
+            sum = 1.0 + y * (1.0 / 6.0 - y * (1.0 / 30.0 - y * (1.0 / 42.0 - 1.0 / 30.0 * y)));
+            sum += 0.5 / x;
+            return sum / x;
+        }
+
+        int p = (int) x;
+        y = x - p;
+        sum = 0.0;
+
+        if (p > 3) {
+            for (int i = 3; i < p; i++) {
+                sum -= 1.0 / ((y + i) * (y + i));
+            }
+        } else if (p < 3) {
+            for (int i = 2; i >= p; i--) {
+                sum += 1.0 / ((y + i) * (y + i));
+            }
+        }
+
+        return sum + Polynomial.evalChebyStar(TRIGAMMA_A, TRIGAMMA_N, y);
     }
 
     private GammaFun() {
