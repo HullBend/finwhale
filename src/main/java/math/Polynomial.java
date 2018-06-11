@@ -40,11 +40,11 @@ public final class Polynomial {
      * arithmetic.
      * 
      * @param x
-     *            argument to the polynomial.
+     *            argument to the polynomial
      * @param coef
-     *            the coefficients of the polynomial.
+     *            the coefficients of the polynomial
      * @param N
-     *            the degree of the polynomial.
+     *            the degree of the polynomial
      */
     public static double p1evl(final double x, final double coef[], final int N) {
 
@@ -75,11 +75,11 @@ public final class Polynomial {
      * arithmetic.
      * 
      * @param x
-     *            argument to the polynomial.
+     *            argument to the polynomial
      * @param coef
-     *            the coefficients of the polynomial.
+     *            the coefficients of the polynomial
      * @param N
-     *            the degree of the polynomial.
+     *            the degree of the polynomial
      */
     public static double polevl(final double x, final double coef[], final int N) {
 
@@ -122,11 +122,11 @@ public final class Polynomial {
      * evaluating a nested polynomial of the same degree.
      * 
      * @param x
-     *            argument to the polynomial.
+     *            argument to the polynomial
      * @param coef
-     *            the coefficients of the polynomial.
+     *            the coefficients of the polynomial
      * @param N
-     *            the number of coefficients.
+     *            the number of coefficients
      */
     public static double chbevl(final double x, final double coef[], final int N) {
 
@@ -141,6 +141,36 @@ public final class Polynomial {
             b1 = b0;
             b0 = x * b1 - b2 + coef[p++];
         } while (--i > 0);
+
+        return 0.5 * (b0 - b2);
+    }
+
+    /**
+     * Evaluates a series of shifted Chebyshev polynomials {@code T_j^*} at
+     * {@code x} over the basic interval {@code [0, 1]} using the method of
+     * Clenshaw.
+     * 
+     * @param coef
+     *            coefficients of the polynomials
+     * 
+     * @param N
+     *            largest degree of polynomials
+     * @param x
+     *            the parameter of the {@code T_j^*} functions
+     * @return the value of a series of Chebyshev polynomials {@code T_j^*}
+     */
+    public static double evalChebyStar(double coef[], int N, double x) {
+
+        double b0 = 0.0;
+        double b1 = 0.0;
+        double b2 = 0.0;
+        double xx = 2.0 * (2.0 * x - 1.0);
+
+        for (int i = N; i >= 0; i--) {
+            b2 = b1;
+            b1 = b0;
+            b0 = xx * b1 - b2 + coef[i];
+        }
 
         return 0.5 * (b0 - b2);
     }
