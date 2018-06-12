@@ -38,17 +38,17 @@ import math.stats.ProbabilityFuncs;
  */
 public class StudentT extends AbstractContinuousDistribution {
 
-    private final int df;
+    private final double df;
     private final double pdfConst;
 
-    public StudentT(final int df) {
+    public StudentT(double df) {
         this(DefaultRng.newPseudoRandom(), df);
     }
 
-    public StudentT(final PseudoRandom prng, final int df) {
+    public StudentT(PseudoRandom prng, double df) {
         super(prng);
-        if (df < 1) {
-            throw new IllegalArgumentException("df < 1 : " + df);
+        if (df <= 0.0) {
+            throw new IllegalArgumentException("df <= 0.0 : " + df);
         }
         final double tmp = FastGamma.logGamma((df + 1.0) / 2.0)
                 - FastGamma.logGamma(df / 2.0);
@@ -57,12 +57,12 @@ public class StudentT extends AbstractContinuousDistribution {
     }
 
     @Override
-    public double pdf(final double x) {
+    public double pdf(double x) {
         return pdfConst * FastMath.pow((1.0 + x * x / df), -(df + 1.0) * 0.5);
     }
 
     @Override
-    public double cdf(final double x) {
+    public double cdf(double x) {
         return ProbabilityFuncs.studentT(df, x);
     }
 
@@ -92,7 +92,7 @@ public class StudentT extends AbstractContinuousDistribution {
 
     @Override
     public double mean() {
-        if (df == 1) {
+        if (df <= 1.0) {
             return Double.NaN;
         }
         return 0.0;
@@ -100,16 +100,16 @@ public class StudentT extends AbstractContinuousDistribution {
 
     @Override
     public double variance() {
-        if (df > 2) {
+        if (df > 2.0) {
             return df / ((double) df - 2.0);
         }
-        if (df == 2) {
+        if (df == 2.0) {
             return Double.POSITIVE_INFINITY;
         }
         return Double.NaN;
     }
 
-    public int getDegreesOfFreedom() {
+    public double getDegreesOfFreedom() {
         return df;
     }
 
