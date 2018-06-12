@@ -8,6 +8,11 @@ It is provided "as is" without expressed or implied warranty.
 */
 package math;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
+import math.rng.DefaultRng;
+
 /**
  * Arithmetic functions.
  */
@@ -571,6 +576,33 @@ public final class Arithmetic {
      */
     public static boolean isProbability(double value) {
         return value >= 0.0 && value <= 1.0;
+    }
+
+    public static int roundToIntStochastically(double x) {
+        if (isBadNum(x)) {
+            return 0;
+        }
+        double fraction = x % 1.0;
+        if (Math.abs(fraction) == 0.5) {
+            // stochastic rounding if the fractional part is exactly 0.5
+            if (DefaultRng.getGlobalPseudoRandom().nextDouble() >= 0.5) {
+                x += 0.5;
+            } else {
+                x -= 0.5;
+            }
+        }
+        return (int) Math.rint(x);
+    }
+
+    public static double round(double x, int scale) {
+        if (isBadNum(x)) {
+            return x;
+        }
+        return BigDecimal.valueOf(x).setScale(scale, RoundingMode.HALF_EVEN).doubleValue();
+    }
+
+    public static double round(double x) {
+        return round(x, 3);
     }
 
     private Arithmetic() {
