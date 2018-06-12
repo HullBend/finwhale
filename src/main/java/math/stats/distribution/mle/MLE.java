@@ -18,6 +18,7 @@
  */
 package math.stats.distribution.mle;
 
+import math.Arithmetic;
 import math.FastGamma;
 import math.FastMath;
 import math.GammaFun;
@@ -33,6 +34,7 @@ public final class MLE {
 
     private static final double LN_EPS = MathConsts.LN_MIN_NORMAL - MathConsts.LN_2;
     private static final double HUGE = 1.0e200;
+    private static final double MU_INCR = 0.1;
     private static final String NO_OBS_MSG = "No observations (x[].length = 0)";
 
     private static final class GammaMLE implements DoubleUnaryOperator {
@@ -291,31 +293,31 @@ public final class MLE {
         double fn0 = f.applyAsDouble(n0);
 
         double min = fn0;
-        double fna = f.applyAsDouble(n0 - 1.0);
-        double fnb = f.applyAsDouble(n0 + 1.0);
+        double fna = f.applyAsDouble(n0 - MU_INCR);
+        double fnb = f.applyAsDouble(n0 + MU_INCR);
 
         double df_est = n0;
 
         if (fna > fn0) {
-            double mu = n0 - 1.0;
+            double mu = n0 - MU_INCR;
             double y;
-            while (((y = f.applyAsDouble(mu)) > min) && (mu >= 1.0)) {
+            while (((y = f.applyAsDouble(mu)) > min) && (mu > 0.0)) {
                 min = y;
                 df_est = mu;
-                mu -= 1.0;
+                mu -= MU_INCR;
             }
         } else if (fnb > fn0) {
-            double mu = n0 + 1.0;
+            double mu = n0 + MU_INCR;
             double y;
             while ((y = f.applyAsDouble(mu)) > min) {
                 min = y;
                 df_est = mu;
-                mu += 1.0;
+                mu += MU_INCR;
             }
         }
 
         ParStudentT param = new ParStudentT();
-        param.df = df_est;
+        param.df = Arithmetic.round(df_est);
         return param;
     }
 
