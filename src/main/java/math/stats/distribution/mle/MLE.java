@@ -25,6 +25,8 @@ import math.GammaFun;
 import math.MathConsts;
 import math.RootFinder;
 import math.function.DoubleUnaryOperator;
+import math.minpack.Lmder_fcn;
+import math.minpack.Minpack_f77;
 
 /**
  * Provides methods for maximum likelihood estimation of distribution
@@ -34,6 +36,7 @@ public final class MLE {
 
     private static final double LN_EPS = MathConsts.LN_MIN_NORMAL - MathConsts.LN_2;
     private static final double HUGE = 1.0e200;
+    private static final double BIG = 1.0e100;
     private static final double MU_INCR = 0.1;
     private static final String NO_OBS_MSG = "No observations (x[].length = 0)";
 
@@ -118,6 +121,43 @@ public final class MLE {
             double tmp = FastGamma.logGamma((df + 1.0) / 2.0) - FastGamma.logGamma(df / 2.0);
             double pdfConst = FastMath.exp(tmp) / Math.sqrt(Math.PI * df);
             return pdfConst * FastMath.pow((1.0 + x * x / df), -(df + 1.0) * 0.5);
+        }
+    }
+
+    private static final class BetaMLE implements Lmder_fcn {
+        private final double a;
+        private final double b;
+
+        BetaMLE(double a, double b) {
+            this.a = a;
+            this.b = b;
+        }
+
+        @Override
+        public void fcn(int m, int n, double[] x, double[] fvec, double[][] fjac, int[] iflag) {
+            if (x[1] <= 0.0 || x[2] <= 0.0) {
+                fvec[1] = BIG;
+                fvec[2] = BIG;
+                fjac[1][1] = BIG;
+                fjac[1][2] = 0.0;
+                fjac[2][1] = 0.0;
+                fjac[2][2] = BIG;
+                return;
+            }
+
+            if (iflag[1] == 1) {
+                double trig = GammaFun.digamma(x[1] + x[2]);
+
+                fvec[1] = GammaFun.digamma(x[1]) - trig - a;
+                fvec[2] = GammaFun.digamma(x[2]) - trig - b;
+            } else if (iflag[1] == 2) {
+                double trig = GammaFun.trigamma(x[1] + x[2]);
+
+                fjac[1][1] = GammaFun.trigamma(x[1]) - trig;
+                fjac[1][2] = -trig;
+                fjac[2][1] = -trig;
+                fjac[2][2] = GammaFun.trigamma(x[2]) - trig;
+            }
         }
     }
 
@@ -319,6 +359,66 @@ public final class MLE {
         ParStudentT param = new ParStudentT();
         param.df = Arithmetic.round(df_est);
         return param;
+    }
+
+    /**
+     * Estimates the parameters {@code alpha} (&alpha;) and {@code beta}
+     * (&beta;) of the Beta distribution from the observations {@code x} using
+     * the maximum likelihood method.
+     * 
+     * @param x
+     *            the list of observations to use to evaluate parameters
+     * @return returns the parameters {@code alpha} (&alpha;) and {@code beta}
+     *         (&beta;)
+     */
+    public static ParBeta getBetaMLE(double[] x) {
+        int n = x.length;
+        if (n == 0) {
+            throw new IllegalArgumentException(NO_OBS_MSG);
+        }
+
+        double sum = 0.0;
+        double a = 0.0;
+        double b = 0.0;
+        for (int i = 0; i < x.length; i++) {
+            sum += x[i];
+            if (x[i] > 0.0) {
+                a += Math.log(x[i]);
+            } else {
+                a -= 709.0;
+            }
+            if (x[i] < 1.0) {
+                b += FastMath.log1p(-x[i]);
+            } else {
+                b -= 709.0;
+            }
+        }
+        double mean = sum / n;
+
+        sum = 0.0;
+        for (int i = 0; i < x.length; i++) {
+            sum += (x[i] - mean) * (x[i] - mean);
+        }
+        double var = sum / (n - 1);
+
+        // param[0] unused because of FORTRAN indexing convention
+        double[] param = new double[3];
+        param[1] = mean * ((mean * (1.0 - mean) / var) - 1.0);
+        param[2] = (1.0 - mean) * ((mean * (1.0 - mean) / var) - 1.0);
+
+        // all of them unused
+        double[] fvec = new double[3];
+        double[][] fjac = new double[3][3];
+        int[] info = new int[2];
+        int[] ipvt = new int[3];
+
+        Minpack_f77.lmder1_f77(new BetaMLE(a, b), 2, 2, param, fvec, fjac, 1e-5, info, ipvt);
+
+        ParBeta params = new ParBeta();
+        params.alpha = param[1];
+        params.beta = param[2];
+
+        return params;
     }
 
     private MLE() {
