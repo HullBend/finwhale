@@ -385,12 +385,12 @@ public final class MLE {
             if (x[i] > 0.0) {
                 a += Math.log(x[i]);
             } else {
-                a -= 709.0;
+                a += LN_EPS;
             }
             if (x[i] < 1.0) {
                 b += FastMath.log1p(-x[i]);
             } else {
-                b -= 709.0;
+                b += LN_EPS;
             }
         }
         double mean = sum / n;
