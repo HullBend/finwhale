@@ -19,7 +19,13 @@ import math.rng.DefaultRng;
 import math.rng.PseudoRandom;
 
 /**
- * TODO
+ * The &Chi;<sup>2</sup>(k) distribution for x &gt;= 0 with PDF:
+ * <p>
+ * <tt>f(x; k) = (1 / (2<sup>k/2</sup> * &Gamma;(k/2))) * x<sup>(k/2) - 1 </sup> * e<sup>-x/2</sup></tt>
+ * where <tt>&Gamma;()</tt> is the Gamma function.
+ * <p>
+ * Valid parameter ranges: <tt>k &gt; 0</tt>; <tt>x &gt; 0</tt> (if
+ * <tt>k = 1</tt>, otherwise <tt>x &gt;= 0</tt>).
  * <p>
  * https://en.wikipedia.org/wiki/Chi-squared_distribution
  */
@@ -27,17 +33,17 @@ public class ChiSquare extends AbstractContinuousDistribution {
 
     private static final double BIG = 100.0;
 
-    private final int degreesOfFreedom;
+    private final double degreesOfFreedom;
     private final Gamma gamma;
 
-    public ChiSquare(final int degreesOfFreedom) {
+    public ChiSquare(double degreesOfFreedom) {
         this(DefaultRng.newPseudoRandom(), degreesOfFreedom);
     }
 
-    public ChiSquare(final PseudoRandom prng, final int degreesOfFreedom) {
+    public ChiSquare(PseudoRandom prng, double degreesOfFreedom) {
         super(prng);
-        if (degreesOfFreedom < 1) {
-            throw new IllegalArgumentException("degreesOfFreedom < 1 : "
+        if (degreesOfFreedom <= 0.0) {
+            throw new IllegalArgumentException("degreesOfFreedom <= 0.0 : "
                     + degreesOfFreedom);
         }
         this.degreesOfFreedom = degreesOfFreedom;
@@ -45,7 +51,7 @@ public class ChiSquare extends AbstractContinuousDistribution {
     }
 
     @Override
-    public double pdf(final double x) {
+    public double pdf(double x) {
         if (x <= 0.0) {
             return 0.0;
         }
@@ -53,7 +59,7 @@ public class ChiSquare extends AbstractContinuousDistribution {
     }
 
     @Override
-    public double cdf(final double x) {
+    public double cdf(double x) {
         if (x <= 0.0) {
             return 0.0;
         }
@@ -96,7 +102,7 @@ public class ChiSquare extends AbstractContinuousDistribution {
     /**
      * @return the degreesOfFreedom
      */
-    public int getDegreesOfFreedom() {
+    public double getDegreesOfFreedom() {
         return degreesOfFreedom;
     }
 
