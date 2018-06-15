@@ -25,6 +25,7 @@ import math.GammaFun;
 import math.MathConsts;
 import math.RootFinder;
 import math.function.DoubleUnaryOperator;
+import math.function.NumericallyDiffMultivariateFunction;
 import math.minpack.Lmder_fcn;
 import math.minpack.Minpack_f77;
 
@@ -158,6 +159,26 @@ public final class MLE {
                 fjac[2][1] = -trig;
                 fjac[2][2] = GammaFun.trigamma(x[2]) - trig;
             }
+        }
+    }
+
+    private static final class ChiSquareMLE extends NumericallyDiffMultivariateFunction {
+        private static final double TERM = MathConsts.LN_2 / 2.0;
+        private final double sumLnHalfth;
+        private final int n;
+
+        ChiSquareMLE(double sumLn, int n) {
+            this.sumLnHalfth = sumLn / 2.0;
+            this.n = n;
+        }
+
+        @Override
+        public double valueAt(double[] point) {
+            double x = point[0];
+            if (x <= 0.0) {
+                return -HUGE;
+            }
+            return x * sumLnHalfth - n * FastGamma.logGamma(x / 2.0) - (n * x) * TERM;
         }
     }
 
