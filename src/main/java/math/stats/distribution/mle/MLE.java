@@ -194,11 +194,7 @@ public final class MLE {
      * @return returns the parameters {@code k} and &theta;
      */
     public static ParGamma getGammaMLE(double[] x) {
-        int n = x.length;
-        if (n == 0) {
-            throw new IllegalArgumentException(NO_OBS_MSG);
-        }
-
+        int n = getLength(x);
         double sum = 0.0;
         double sumLn = 0.0;
 
@@ -242,11 +238,7 @@ public final class MLE {
      * @return returns the parameters &mu; and &sigma;
      */
     public static ParLogNormal getLogNormalMLE(double[] x) {
-        int n = x.length;
-        if (n == 0) {
-            throw new IllegalArgumentException(NO_OBS_MSG);
-        }
-
+        int n = getLength(x);
         double sum = 0.0;
         for (int i = 0; i < n; i++) {
             if (x[i] > 0.0) {
@@ -286,11 +278,7 @@ public final class MLE {
      * @return returns the parameters &lambda; and {@code k}
      */
     public static ParWeibull getWeibullMLE(double[] x) {
-        int n = x.length;
-        if (n == 0) {
-            throw new IllegalArgumentException(NO_OBS_MSG);
-        }
-
+        int n = getLength(x);
         double sumLn = 0.0;
         double sumLn2 = 0.0;
 
@@ -339,11 +327,7 @@ public final class MLE {
      * @return returns the parameter &mu;
      */
     public static ParStudentT getStudentTMLE(double[] x) {
-        int n = x.length;
-        if (n == 0) {
-            throw new IllegalArgumentException(NO_OBS_MSG);
-        }
-
+        int n = getLength(x);
         double var = 0.0;
         for (int i = 0; i < x.length; i++) {
             var += (x[i] * x[i]);
@@ -395,11 +379,7 @@ public final class MLE {
      *         (&beta;)
      */
     public static ParBeta getBetaMLE(double[] x) {
-        int n = x.length;
-        if (n == 0) {
-            throw new IllegalArgumentException(NO_OBS_MSG);
-        }
-
+        int n = getLength(x);
         double sum = 0.0;
         double a = 0.0;
         double b = 0.0;
@@ -455,11 +435,7 @@ public final class MLE {
      * @return returns the parameter {@code k} (degrees of freedom)
      */
     public static ParChiSquare getChiSquareMLE(double[] x) {
-        int n = x.length;
-        if (n == 0) {
-            throw new IllegalArgumentException(NO_OBS_MSG);
-        }
-
+        int n = getLength(x);
         double sumLn = 0.0;
         for (int i = 0; i < x.length; i++) {
             if (x[i] > 0.0) {
@@ -485,11 +461,7 @@ public final class MLE {
      * @return returns the exponential rate parameter &lambda;
      */
     public static ParExponential getExponentialMLE(double[] x) {
-        int n = x.length;
-        if (n == 0) {
-            throw new IllegalArgumentException(NO_OBS_MSG);
-        }
-
+        int n = getLength(x);
         double sum = 0.0;
         for (int i = 0; i < x.length; i++) {
             sum += x[i];
@@ -497,6 +469,43 @@ public final class MLE {
         ParExponential param = new ParExponential();
         param.lambda = (double) n / sum;
         return param;
+    }
+
+    /**
+     * Estimates the parameters {@code mean} (&mu;) and {@code stdDev} (&sigma;)
+     * of the Normal distribution from the observations {@code x} using the
+     * maximum likelihood method.
+     * 
+     * @param x
+     *            the list of observations to use to evaluate parameters
+     * @return returns the parameters {@code mean} (&mu;) and {@code stdDev}
+     *         (&sigma;)
+     */
+    public static ParNormal getNormalMLE(double[] x) {
+        int n = getLength(x);
+        double sum = 0.0;
+        for (int i = 0; i < x.length; i++) {
+            sum += x[i];
+        }
+        double sigma = sum / n;
+
+        sum = 0.0;
+        for (int i = 0; i < x.length; i++) {
+            double dev = x[i] - sigma;
+            sum = sum + (dev * dev);
+        }
+        ParNormal params = new ParNormal();
+        params.mean = sigma;
+        params.stdDev = Math.sqrt(sum / n);
+        return params;
+    }
+
+    private static int getLength(double[] x) {
+        int n = x.length;
+        if (n == 0) {
+            throw new IllegalArgumentException(NO_OBS_MSG);
+        }
+        return n;
     }
 
     private MLE() {
