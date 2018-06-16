@@ -25,9 +25,11 @@ import math.GammaFun;
 import math.MathConsts;
 import math.RootFinder;
 import math.function.DoubleUnaryOperator;
+import math.function.MultivariateFunctionResult;
 import math.function.NumericallyDiffMultivariateFunction;
 import math.minpack.Lmder_fcn;
 import math.minpack.Minpack_f77;
+import math.optim.CGOptimizer;
 
 /**
  * Provides methods for maximum likelihood estimation of distribution
@@ -440,6 +442,38 @@ public final class MLE {
         params.beta = param[2];
 
         return params;
+    }
+
+    /**
+     * Estimates the parameter {@code k} (degrees of freedom) of the ChiSquare
+     * distribution from the observations {@code x} using the maximum likelihood
+     * method. Note that this implementation allows for double-valued
+     * estimators.
+     * 
+     * @param x
+     *            the list of observations to use to evaluate parameters
+     * @return returns the parameter {@code k} (degrees of freedom)
+     */
+    public static ParChiSquare getChiSquareMLE(double[] x) {
+        int n = x.length;
+        if (n == 0) {
+            throw new IllegalArgumentException(NO_OBS_MSG);
+        }
+
+        double sumLn = 0.0;
+        for (int i = 0; i < x.length; i++) {
+            if (x[i] > 0.0) {
+                sumLn += Math.log(x[i]);
+            } else {
+                sumLn += LN_EPS;
+            }
+        }
+
+        MultivariateFunctionResult res = CGOptimizer.maximize(new ChiSquareMLE(sumLn, n),
+                new double[] { 0.001, 100.0 });
+        ParChiSquare param = new ParChiSquare();
+        param.degreesOfFreedom = res.point[0];
+        return param;
     }
 
     private MLE() {
