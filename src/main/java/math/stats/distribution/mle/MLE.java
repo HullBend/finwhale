@@ -476,6 +476,29 @@ public final class MLE {
         return param;
     }
 
+    /**
+     * Estimates the parameter &lambda; (rate) of the Exponential distribution
+     * from the observations {@code x} using the maximum likelihood method.
+     * 
+     * @param x
+     *            the list of observations to use to evaluate parameters
+     * @return returns the exponential rate parameter &lambda;
+     */
+    public static ParExponential getExponentialMLE(double[] x) {
+        int n = x.length;
+        if (n == 0) {
+            throw new IllegalArgumentException(NO_OBS_MSG);
+        }
+
+        double sum = 0.0;
+        for (int i = 0; i < x.length; i++) {
+            sum += x[i];
+        }
+        ParExponential param = new ParExponential();
+        param.lambda = (double) n / sum;
+        return param;
+    }
+
     private MLE() {
         throw new AssertionError();
     }
