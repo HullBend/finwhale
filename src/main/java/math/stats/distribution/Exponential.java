@@ -20,7 +20,12 @@ import math.rng.DefaultRng;
 import math.rng.PseudoRandom;
 
 /**
- * TODO
+ * The Exponential(&lambda;) distribution for x &gt;= 0 with PDF:
+ * <p>
+ * <tt>f(x; &lambda;) = &lambda; * e<sup>-&lambda; * x</sup></tt> where &lambda;
+ * &gt; 0.
+ * <p>
+ * Valid parameter ranges: <tt>x &gt;= 0</tt>; &lambda; &gt; 0.
  * <p>
  * https://en.wikipedia.org/wiki/Exponential_distribution
  */
@@ -30,11 +35,11 @@ public class Exponential extends AbstractContinuousDistribution {
 
     private final double lambda;
 
-    public Exponential(final double lambda) {
+    public Exponential(double lambda) {
         this(DefaultRng.newPseudoRandom(), lambda);
     }
 
-    public Exponential(final PseudoRandom prng, final double lambda) {
+    public Exponential(PseudoRandom prng, double lambda) {
         super(prng);
         if (lambda <= 0.0) {
             throw new IllegalArgumentException("lambda <= 0.0 : " + lambda);
