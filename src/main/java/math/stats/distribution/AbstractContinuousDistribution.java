@@ -15,6 +15,7 @@
  */
 package math.stats.distribution;
 
+import math.Arithmetic;
 import math.rng.PseudoRandom;
 
 public abstract class AbstractContinuousDistribution implements
@@ -53,7 +54,11 @@ public abstract class AbstractContinuousDistribution implements
         StringBuilder buf = new StringBuilder(name);
         buf.append("(");
         for (int i = 0; i < params.length; ++i) {
-            buf.append(params[i]);
+            Number p = params[i];
+            if (p instanceof Double) {
+                p = Double.valueOf(Arithmetic.round(p.doubleValue(), 4));
+            }
+            buf.append(p);
             if (i != params.length - 1) {
                 buf.append(", ");
             }
