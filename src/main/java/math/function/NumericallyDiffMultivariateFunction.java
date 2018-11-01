@@ -44,7 +44,7 @@ public abstract class NumericallyDiffMultivariateFunction implements
 
         for (int i = 0; i < x.length; ++i) {
             double xi = x[i];
-            double hi = (xi != 0) ? diffScale * Math.abs(xi) : diffScale;
+            double hi = (xi != 0.0) ? diffScale * Math.abs(xi) : diffScale;
 
             double xi_plus_hi = xi + hi;
 
