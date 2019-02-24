@@ -14,7 +14,7 @@ import math.function.DoubleConsumer;
 public class DoubleSummaryStatistics implements DoubleConsumer {
     private long count;
     private double sum;
-    private double sumCompensation; // Low order bits of sum
+    private double sumCompensation; // Negative low order bits of sum
     private double min = Double.POSITIVE_INFINITY;
     private double max = Double.NEGATIVE_INFINITY;
     /**
@@ -128,7 +128,7 @@ public class DoubleSummaryStatistics implements DoubleConsumer {
         average = ((countSoFar * average) / count) + (value / count);
         sumDiffFromCurrMeanSquaredWithCompensation(delta * (value - average));
         if (count > 1L) {
-            variance = (sumDiffFromCurrMeanSquared + sumDiffFromCurrMeanSquaredCompensation) / countSoFar;
+            variance = (sumDiffFromCurrMeanSquared - sumDiffFromCurrMeanSquaredCompensation) / countSoFar;
         }
     }
 
@@ -223,7 +223,7 @@ public class DoubleSummaryStatistics implements DoubleConsumer {
      */
     public final double getSum() {
         // Better error bounds to add both terms as the final sum
-        return sum + sumCompensation;
+        return sum - sumCompensation;
     }
 
     /**
