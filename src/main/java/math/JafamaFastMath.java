@@ -294,34 +294,6 @@ final class JafamaFastMath {
 
     /**
      * @param angle Angle in radians.
-     * @return Angle sine.
-     */
-    static double sin(double angle) {
-        boolean negateResult;
-        if (angle < 0.0) {
-            angle = -angle;
-            negateResult = true;
-        } else {
-            negateResult = false;
-        }
-        if (angle > SIN_COS_MAX_VALUE_FOR_INT_MODULO) {
-            // Faster than using normalizeZeroTwoPi.
-            angle = remainderTwoPi(angle);
-            if (angle < 0.0) {
-                angle += 2*Math.PI;
-            }
-        }
-        int index = (int)(angle * SIN_COS_INDEXER + 0.5);
-        double delta = (angle - index * SIN_COS_DELTA_HI) - index * SIN_COS_DELTA_LO;
-        index &= (SIN_COS_TABS_SIZE-2); // index % (SIN_COS_TABS_SIZE-1)
-        double indexSin = sinTab[index];
-        double indexCos = cosTab[index];
-        double result = indexSin + delta * (indexCos + delta * (-indexSin * ONE_DIV_F2 + delta * (-indexCos * ONE_DIV_F3 + delta * indexSin * ONE_DIV_F4)));
-        return negateResult ? -result : result;
-    }
-
-    /**
-     * @param angle Angle in radians.
      * @return Angle cosine.
      */
     static double cos(double angle) {

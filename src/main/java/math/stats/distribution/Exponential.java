@@ -61,7 +61,7 @@ public class Exponential extends AbstractContinuousDistribution {
         if (y >= BIG) {
             return 1.0;
         }
-        return -Math.expm1(-y);
+        return -FastMath.expm1(-y);
     }
 
     @Override

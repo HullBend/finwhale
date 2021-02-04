@@ -23,10 +23,10 @@ import java.util.Random;
  * trigonometric functions.
  * <p/>
  * FastMath is a drop-in replacement for {@link Math}. This means that for any
- * method in {@code java.lang.Math} (say {@code Math.sin(x)} or
- * {@code Math.cbrt(y)}), user can directly change the class and use the methods
- * as is (using {@code FastMath.sin(x)} or {@code FastMath.cbrt(y)} in the
- * previous example).
+ * method in {@code java.lang.Math} (say {@code Math.sinh(x)} or
+ * {@code Math.hypot(y)}), user can directly change the class and use the
+ * methods as is (using {@code FastMath.sinh(x)} or {@code FastMath.hypot(y)} in
+ * the previous example).
  */
 public final class FastMath {
 
@@ -34,7 +34,7 @@ public final class FastMath {
      * Don't let anyone instantiate this class.
      */
     private FastMath() {
-        throw new AssertionError(); 
+        throw new AssertionError();
     }
 
     /**
@@ -54,7 +54,7 @@ public final class FastMath {
      * @return the sine of the argument.
      */
     public static double sin(double a) {
-        return JafamaFastMath.sin(a);
+        return Math.sin(a);
     }
 
     /**
@@ -92,11 +92,7 @@ public final class FastMath {
      * @return the tangent of the argument.
      */
     public static double tan(double a) {
-        // StrictMath tan() can sometimes be faster than the intrinsic from
-        // java.lang.Math
-        return StrictMath.tan(a);
-//      that's a bit inaccurate around PI / 2
-//      return sin(a) / cos(a);
+        return Math.tan(a);
     }
 
     /**
@@ -212,7 +208,7 @@ public final class FastMath {
      *         base of the natural logarithms.
      */
     public static double exp(double a) {
-        return CommonsAccurateMath.exp(a);
+        return Math.exp(a);
     }
 
     /**
@@ -318,7 +314,7 @@ public final class FastMath {
      * @since 1.5
      */
     public static double cbrt(double a) {
-        return CommonsAccurateMath.cbrt(a);
+        return Math.cbrt(a);
     }
 
     /**
@@ -602,7 +598,7 @@ public final class FastMath {
      * @return the value {@code a}<sup>{@code b}</sup>.
      */
     public static double pow(double a, double b) {
-        return CommonsAccurateMath.pow(a, b);
+        return Math.pow(a, b);
     }
 
     /**
@@ -1064,7 +1060,7 @@ public final class FastMath {
      * @since 1.5
      */
     public static double expm1(double x) {
-        return Math.expm1(x);
+        return CommonsAccurateMath.expm1(x);
     }
 
     /**

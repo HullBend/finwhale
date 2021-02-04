@@ -61,14 +61,6 @@ final class CommonsAccurateMath {
      */
     private static final long HEX_40000000 = 0x40000000L; // 1073741824L
 
-    /**
-     * 2^52 - double numbers this large must be integral (no fraction) or NaN or
-     * Infinite
-     */
-    private static final double TWO_POWER_52 = 4503599627370496.0;
-    /** 2^53 - double numbers this large must be even. */
-    private static final double TWO_POWER_53 = 2 * TWO_POWER_52;
-
     private static final boolean RECOMPUTE_TABLES_AT_RUNTIME = false;
 
     /** Index of exp(0) in the array of integer exponentials. */
@@ -79,41 +71,12 @@ final class CommonsAccurateMath {
     /** Logarithm table length. */
     static final int LN_MANT_LEN = 1024;
 
-    /** log(2) (high bits). */
-    private static final double LN_2_A = 0.693147063255310059;
-
-    /** log(2) (low bits). */
-    private static final double LN_2_B = 1.17304635250823482e-7;
-
-    /** Coefficients for log, when input 0.99 < x < 1.01. */
-    private static final double LN_QUICK_COEF[][] = {
-            { 1.0, 5.669184079525E-24 }, { -0.25, -0.25 },
-            { 0.3333333134651184, 1.986821492305628E-8 },
-            { -0.25, -6.663542893624021E-14 },
-            { 0.19999998807907104, 1.1921056801463227E-8 },
-            { -0.1666666567325592, -7.800414592973399E-9 },
-            { 0.1428571343421936, 5.650007086920087E-9 },
-            { -0.12502530217170715, -7.44321345601866E-11 },
-            { 0.11113807559013367, 9.219544613762692E-9 }, };
-
-    /** Coefficients for log in the range of 1.0 < x < 1.0 + 2^-10. */
-    private static final double LN_HI_PREC_COEF[][] = {
-            { 1.0, -6.032174644509064E-23 }, { -0.25, -0.25 },
-            { 0.3333333134651184, 1.9868161777724352E-8 },
-            { -0.2499999701976776, -2.957007209750105E-8 },
-            { 0.19999954104423523, 1.5830993332061267E-10 },
-            { -0.16624879837036133, -2.6033824355191673E-8 } };
-
     /** Exponential fractions table length. */
     static final int EXP_FRAC_TABLE_LEN = 1025; // 0, 1/1024, ... 1024/1024
 
     /** StrictMath.log(Double.MAX_VALUE): {@value} */
     private static final double LOG_MAX_VALUE = StrictMath
             .log(Double.MAX_VALUE);
-
-    /** Table of 2^((n+2)/3) */
-    private static final double CBRTTWO[] = { 0.6299605249474366,
-            0.7937005259840998, 1.0, 1.2599210498948732, 1.5874010519681994 };
 
     /**
      * Enclose large data table in nested static class so it's only loaded on
@@ -201,202 +164,6 @@ final class CommonsAccurateMath {
     }
 
     /**
-     * Enclose large data table in nested static class so it's only loaded on
-     * first access.
-     */
-    private static final class lnMant {
-        /**
-         * Extended precision logarithm table over the range 1 - 2 in increments
-         * of 2^-10.
-         */
-        private static final double[][] LN_MANT;
-
-        static {
-            if (RECOMPUTE_TABLES_AT_RUNTIME) {
-                LN_MANT = new double[CommonsAccurateMath.LN_MANT_LEN][];
-
-                // Populate lnMant table
-                for (int i = 0; i < LN_MANT.length; i++) {
-                    final double d = Double
-                            .longBitsToDouble((((long) i) << 42) | 0x3ff0000000000000L);
-                    LN_MANT[i] = CommonsCalc.slowLog(d);
-                }
-            } else {
-                LN_MANT = CommonsMathLiterals.loadLnMant();
-            }
-        }
-    }
-
-    /**
-     * Power function. Compute x^y.
-     * 
-     * @param x
-     *            a double
-     * @param y
-     *            a double
-     * @return double
-     */
-    static double pow(double x, double y) {
-        final double lns[] = new double[2];
-
-        if (y == 0.0) {
-            return 1.0;
-        }
-
-        if (x != x) { // X is NaN
-            return x;
-        }
-
-        if (x == 0) {
-            long bits = Double.doubleToRawLongBits(x);
-            if ((bits & 0x8000000000000000L) != 0) {
-                // -zero
-                long yi = (long) y;
-
-                if (y < 0 && y == yi && (yi & 1) == 1) {
-                    return Double.NEGATIVE_INFINITY;
-                }
-
-                if (y > 0 && y == yi && (yi & 1) == 1) {
-                    return -0.0;
-                }
-            }
-
-            if (y < 0) {
-                return Double.POSITIVE_INFINITY;
-            }
-            if (y > 0) {
-                return 0.0;
-            }
-
-            return Double.NaN;
-        }
-
-        if (x == Double.POSITIVE_INFINITY) {
-            if (y != y) { // y is NaN
-                return y;
-            }
-            if (y < 0.0) {
-                return 0.0;
-            } else {
-                return Double.POSITIVE_INFINITY;
-            }
-        }
-
-        if (y == Double.POSITIVE_INFINITY) {
-            if (x * x == 1.0) {
-                return Double.NaN;
-            }
-
-            if (x * x > 1.0) {
-                return Double.POSITIVE_INFINITY;
-            } else {
-                return 0.0;
-            }
-        }
-
-        if (x == Double.NEGATIVE_INFINITY) {
-            if (y != y) { // y is NaN
-                return y;
-            }
-
-            if (y < 0) {
-                long yi = (long) y;
-                if (y == yi && (yi & 1) == 1) {
-                    return -0.0;
-                }
-
-                return 0.0;
-            }
-
-            if (y > 0) {
-                long yi = (long) y;
-                if (y == yi && (yi & 1) == 1) {
-                    return Double.NEGATIVE_INFINITY;
-                }
-
-                return Double.POSITIVE_INFINITY;
-            }
-        }
-
-        if (y == Double.NEGATIVE_INFINITY) {
-
-            if (x * x == 1.0) {
-                return Double.NaN;
-            }
-
-            if (x * x < 1.0) {
-                return Double.POSITIVE_INFINITY;
-            } else {
-                return 0.0;
-            }
-        }
-
-        /* Handle special case x<0 */
-        if (x < 0) {
-            // y is an even integer in this case
-            if (y >= TWO_POWER_53 || y <= -TWO_POWER_53) {
-                return pow(-x, y);
-            }
-
-            if (y == (long) y) {
-                // If y is an integer
-                return ((long) y & 1) == 0 ? pow(-x, y) : -pow(-x, y);
-            } else {
-                return Double.NaN;
-            }
-        }
-
-        /* Split y into ya and yb such that y = ya+yb */
-        double ya;
-        double yb;
-        if (y < 8e298 && y > -8e298) {
-            double tmp1 = y * HEX_40000000;
-            ya = y + tmp1 - tmp1;
-            yb = y - ya;
-        } else {
-            double tmp1 = y * 9.31322574615478515625E-10;
-            double tmp2 = tmp1 * 9.31322574615478515625E-10;
-            ya = (tmp1 + tmp2 - tmp1) * HEX_40000000 * HEX_40000000;
-            yb = y - ya;
-        }
-
-        /* Compute ln(x) */
-        final double lores = log_(x, lns);
-        if (Double.isInfinite(lores)) { // don't allow this to be converted to
-                                        // NaN
-            return lores;
-        }
-
-        double lna = lns[0];
-        double lnb = lns[1];
-
-        /* resplit lns */
-        double tmp1 = lna * HEX_40000000;
-        double tmp2 = lna + tmp1 - tmp1;
-        lnb += lna - tmp2;
-        lna = tmp2;
-
-        // y*ln(x) = (aa+ab)
-        final double aa = lna * ya;
-        final double ab = lna * yb + lnb * ya + lnb * yb;
-
-        lna = aa + ab;
-        lnb = -(lna - aa - ab);
-
-        double z = 1.0 / 120.0;
-        z = z * lnb + (1.0 / 24.0);
-        z = z * lnb + (1.0 / 6.0);
-        z = z * lnb + 0.5;
-        z = z * lnb + 1.0;
-        z = z * lnb;
-
-        final double result = exp_(lna, z, null);
-        // result = result + result * z;
-        return result;
-    }
-
-    /**
      * Raise a double to an int power.
      * 
      * @param d
@@ -475,29 +242,6 @@ final class CommonsAccurateMath {
 
         return resultHigh + resultLow;
 
-    }
-
-    /**
-     * Exponential function.
-     * 
-     * Computes exp(x), function result is nearly rounded. It will be correctly
-     * rounded to the theoretical value for 99.9% of input values, otherwise it
-     * will have a 1 UPL error.
-     * 
-     * Method: Lookup intVal = exp(int(x)) Lookup fracVal = exp(int(x-int(x) /
-     * 1024.0) * 1024.0 ); Compute z as the exponential of the remaining bits by
-     * a polynomial minus one exp(x) = intVal * fracVal * (1 + z)
-     * 
-     * Accuracy: Calculation is done with 63 bits of precision, so result should
-     * be correctly rounded for 99.9% of input values, with less than 1 ULP
-     * error otherwise.
-     * 
-     * @param x
-     *            a double
-     * @return double e<sup>x</sup>
-     */
-    static double exp(double x) {
-        return exp_(x, 0.0, null);
     }
 
     /**
@@ -640,6 +384,17 @@ final class CommonsAccurateMath {
         }
 
         return result;
+    }
+
+    /**
+     * Compute exp(x) - 1
+     * 
+     * @param x
+     *            number to compute shifted exponential
+     * @return exp(x) - 1
+     */
+    static double expm1(double x) {
+        return expm1_(x, null);
     }
 
     /**
@@ -815,18 +570,18 @@ final class CommonsAccurateMath {
         if (x > 20) {
             if (x >= LOG_MAX_VALUE) {
                 // Avoid overflow (MATH-905).
-                final double t = exp(0.5 * x);
+                final double t = Math.exp(0.5 * x);
                 return (0.5 * t) * t;
             } else {
-                return 0.5 * exp(x);
+                return 0.5 * Math.exp(x);
             }
         } else if (x < -20) {
             if (x <= -LOG_MAX_VALUE) {
                 // Avoid overflow (MATH-905).
-                final double t = exp(-0.5 * x);
+                final double t = Math.exp(-0.5 * x);
                 return (0.5 * t) * t;
             } else {
-                return 0.5 * exp(-x);
+                return 0.5 * Math.exp(-x);
             }
         }
 
@@ -890,18 +645,18 @@ final class CommonsAccurateMath {
         if (x > 20) {
             if (x >= LOG_MAX_VALUE) {
                 // Avoid overflow (MATH-905).
-                final double t = exp(0.5 * x);
+                final double t = Math.exp(0.5 * x);
                 return (0.5 * t) * t;
             } else {
-                return 0.5 * exp(x);
+                return 0.5 * Math.exp(x);
             }
         } else if (x < -20) {
             if (x <= -LOG_MAX_VALUE) {
                 // Avoid overflow (MATH-905).
-                final double t = exp(-0.5 * x);
+                final double t = Math.exp(-0.5 * x);
                 return (-0.5 * t) * t;
             } else {
-                return -0.5 * exp(-x);
+                return -0.5 * Math.exp(-x);
             }
         }
 
@@ -1126,329 +881,5 @@ final class CommonsAccurateMath {
         }
 
         return result;
-    }
-
-    /**
-     * Compute the cubic root of a number.
-     * 
-     * @param x
-     *            number on which evaluation is done
-     * @return cubic root of x
-     */
-    static double cbrt(double x) {
-        /* Convert input double to bits */
-        long inbits = Double.doubleToRawLongBits(x);
-        int exponent = (int) ((inbits >> 52) & 0x7ff) - 1023;
-        boolean subnormal = false;
-
-        if (exponent == -1023) {
-            if (x == 0) {
-                return x;
-            }
-
-            /* Subnormal, so normalize */
-            subnormal = true;
-            x *= 1.8014398509481984E16; // 2^54
-            inbits = Double.doubleToRawLongBits(x);
-            exponent = (int) ((inbits >> 52) & 0x7ff) - 1023;
-        }
-
-        if (exponent == 1024) {
-            // Nan or infinity. Don't care which.
-            return x;
-        }
-
-        /* Divide the exponent by 3 */
-        int exp3 = exponent / 3;
-
-        /* p2 will be the nearest power of 2 to x with its exponent divided by 3 */
-        double p2 = Double.longBitsToDouble((inbits & 0x8000000000000000L)
-                | (long) (((exp3 + 1023) & 0x7ff)) << 52);
-
-        /* This will be a number between 1 and 2 */
-        final double mant = Double
-                .longBitsToDouble((inbits & 0x000fffffffffffffL) | 0x3ff0000000000000L);
-
-        /* Estimate the cube root of mant by polynomial */
-        double est = -0.010714690733195933;
-        est = est * mant + 0.0875862700108075;
-        est = est * mant + -0.3058015757857271;
-        est = est * mant + 0.7249995199969751;
-        est = est * mant + 0.5039018405998233;
-
-        est *= CBRTTWO[exponent % 3 + 2];
-
-        // est should now be good to about 15 bits of precision. Do 2 rounds of
-        // Newton's method to get closer, this should get us full double
-        // precision
-        // Scale down x for the purpose of doing newtons method. This avoids
-        // over/under flows.
-        final double xs = x / (p2 * p2 * p2);
-        est += (xs - est * est * est) / (3 * est * est);
-        est += (xs - est * est * est) / (3 * est * est);
-
-        // Do one round of Newton's method in extended precision to get the last
-        // bit right.
-        double temp = est * HEX_40000000;
-        double ya = est + temp - temp;
-        double yb = est - ya;
-
-        double za = ya * ya;
-        double zb = ya * yb * 2.0 + yb * yb;
-        temp = za * HEX_40000000;
-        double temp2 = za + temp - temp;
-        zb += za - temp2;
-        za = temp2;
-
-        zb = za * yb + ya * zb + zb * yb;
-        za = za * ya;
-
-        double na = xs - za;
-        double nb = -(na - xs + za);
-        nb -= zb;
-
-        est += (na + nb) / (3 * est * est);
-
-        /* Scale by a power of two, so this is exact. */
-        est *= p2;
-
-        if (subnormal) {
-            est *= 3.814697265625E-6; // 2^-18
-        }
-
-        return est;
-    }
-
-    /**
-     * Internal helper method for natural logarithm function.
-     * 
-     * @param x
-     *            original argument of the natural logarithm function
-     * @param hiPrec
-     *            extra bits of precision on output (To Be Confirmed)
-     * @return log(x)
-     */
-    private static double log_(final double x, final double[] hiPrec) {
-        if (x == 0) { // Handle special case of +0/-0
-            return Double.NEGATIVE_INFINITY;
-        }
-        long bits = Double.doubleToRawLongBits(x);
-
-        /* Handle special cases of negative input, and NaN */
-        if (((bits & 0x8000000000000000L) != 0 || x != x) && x != 0.0) {
-            if (hiPrec != null) {
-                hiPrec[0] = Double.NaN;
-            }
-
-            return Double.NaN;
-        }
-
-        /* Handle special cases of Positive infinity. */
-        if (x == Double.POSITIVE_INFINITY) {
-            if (hiPrec != null) {
-                hiPrec[0] = Double.POSITIVE_INFINITY;
-            }
-
-            return Double.POSITIVE_INFINITY;
-        }
-
-        /* Extract the exponent */
-        int exp = (int) (bits >> 52) - 1023;
-
-        if ((bits & 0x7ff0000000000000L) == 0) {
-            // Subnormal!
-            if (x == 0) {
-                // Zero
-                if (hiPrec != null) {
-                    hiPrec[0] = Double.NEGATIVE_INFINITY;
-                }
-
-                return Double.NEGATIVE_INFINITY;
-            }
-
-            /* Normalize the subnormal number. */
-            bits <<= 1;
-            while ((bits & 0x0010000000000000L) == 0) {
-                --exp;
-                bits <<= 1;
-            }
-        }
-
-        if ((exp == -1 || exp == 0) && x < 1.01 && x > 0.99 && hiPrec == null) {
-            /*
-             * The normal method doesn't work well in the range [0.99, 1.01], so
-             * call do a straight polynomial expansion in higer precision.
-             */
-
-            /* Compute x - 1.0 and split it */
-            double xa = x - 1.0;
-            double xb = xa - x + 1.0;
-            double tmp = xa * HEX_40000000;
-            double aa = xa + tmp - tmp;
-            double ab = xa - aa;
-            xa = aa;
-            xb = ab;
-
-            final double[] lnCoef_last = LN_QUICK_COEF[LN_QUICK_COEF.length - 1];
-            double ya = lnCoef_last[0];
-            double yb = lnCoef_last[1];
-
-            for (int i = LN_QUICK_COEF.length - 2; i >= 0; i--) {
-                /* Multiply a = y * x */
-                aa = ya * xa;
-                ab = ya * xb + yb * xa + yb * xb;
-                /* split, so now y = a */
-                tmp = aa * HEX_40000000;
-                ya = aa + tmp - tmp;
-                yb = aa - ya + ab;
-
-                /* Add a = y + lnQuickCoef */
-                final double[] lnCoef_i = LN_QUICK_COEF[i];
-                aa = ya + lnCoef_i[0];
-                ab = yb + lnCoef_i[1];
-                /* Split y = a */
-                tmp = aa * HEX_40000000;
-                ya = aa + tmp - tmp;
-                yb = aa - ya + ab;
-            }
-
-            /* Multiply a = y * x */
-            aa = ya * xa;
-            ab = ya * xb + yb * xa + yb * xb;
-            /* split, so now y = a */
-            tmp = aa * HEX_40000000;
-            ya = aa + tmp - tmp;
-            yb = aa - ya + ab;
-
-            return ya + yb;
-        }
-
-        // lnm is a log of a number in the range of 1.0 - 2.0, so 0 <= lnm <
-        // ln(2)
-        final double[] lnm = lnMant.LN_MANT[(int) ((bits & 0x000ffc0000000000L) >> 42)];
-
-        /*
-         * double epsilon = x / Double.longBitsToDouble(bits &
-         * 0xfffffc0000000000L);
-         * 
-         * epsilon -= 1.0;
-         */
-
-        // y is the most significant 10 bits of the mantissa
-        // double y = Double.longBitsToDouble(bits & 0xfffffc0000000000L);
-        // double epsilon = (x - y) / y;
-        final double epsilon = (bits & 0x3ffffffffffL)
-                / (TWO_POWER_52 + (bits & 0x000ffc0000000000L));
-
-        double lnza = 0.0;
-        double lnzb = 0.0;
-
-        if (hiPrec != null) {
-            /* split epsilon -> x */
-            double tmp = epsilon * HEX_40000000;
-            double aa = epsilon + tmp - tmp;
-            double ab = epsilon - aa;
-            double xa = aa;
-            double xb = ab;
-
-            /* Need a more accurate epsilon, so adjust the division. */
-            final double numer = bits & 0x3ffffffffffL;
-            final double denom = TWO_POWER_52 + (bits & 0x000ffc0000000000L);
-            aa = numer - xa * denom - xb * denom;
-            xb += aa / denom;
-
-            /* Remez polynomial evaluation */
-            final double[] lnCoef_last = LN_HI_PREC_COEF[LN_HI_PREC_COEF.length - 1];
-            double ya = lnCoef_last[0];
-            double yb = lnCoef_last[1];
-
-            for (int i = LN_HI_PREC_COEF.length - 2; i >= 0; i--) {
-                /* Multiply a = y * x */
-                aa = ya * xa;
-                ab = ya * xb + yb * xa + yb * xb;
-                /* split, so now y = a */
-                tmp = aa * HEX_40000000;
-                ya = aa + tmp - tmp;
-                yb = aa - ya + ab;
-
-                /* Add a = y + lnHiPrecCoef */
-                final double[] lnCoef_i = LN_HI_PREC_COEF[i];
-                aa = ya + lnCoef_i[0];
-                ab = yb + lnCoef_i[1];
-                /* Split y = a */
-                tmp = aa * HEX_40000000;
-                ya = aa + tmp - tmp;
-                yb = aa - ya + ab;
-            }
-
-            /* Multiply a = y * x */
-            aa = ya * xa;
-            ab = ya * xb + yb * xa + yb * xb;
-
-            /* split, so now lnz = a */
-            /*
-             * tmp = aa * 1073741824.0; lnza = aa + tmp - tmp; lnzb = aa - lnza
-             * + ab;
-             */
-            lnza = aa + ab;
-            lnzb = -(lnza - aa - ab);
-        } else {
-            /*
-             * High precision not required. Eval Remez polynomial using standard
-             * double precision
-             */
-            lnza = -0.16624882440418567;
-            lnza = lnza * epsilon + 0.19999954120254515;
-            lnza = lnza * epsilon + -0.2499999997677497;
-            lnza = lnza * epsilon + 0.3333333333332802;
-            lnza = lnza * epsilon + -0.5;
-            lnza = lnza * epsilon + 1.0;
-            lnza = lnza * epsilon;
-        }
-
-        /*
-         * Relative sizes: lnzb [0, 2.33E-10] lnm[1] [0, 1.17E-7] ln2B*exp [0,
-         * 1.12E-4] lnza [0, 9.7E-4] lnm[0] [0, 0.692] ln2A*exp [0, 709]
-         */
-
-        /*
-         * Compute the following sum: lnzb + lnm[1] + ln2B*exp + lnza + lnm[0] +
-         * ln2A*exp;
-         */
-
-        // return lnzb + lnm[1] + ln2B*exp + lnza + lnm[0] + ln2A*exp;
-        double a = LN_2_A * exp;
-        double b = 0.0;
-        double c = a + lnm[0];
-        double d = -(c - a - lnm[0]);
-        a = c;
-        b = b + d;
-
-        c = a + lnza;
-        d = -(c - a - lnza);
-        a = c;
-        b = b + d;
-
-        c = a + LN_2_B * exp;
-        d = -(c - a - LN_2_B * exp);
-        a = c;
-        b = b + d;
-
-        c = a + lnm[1];
-        d = -(c - a - lnm[1]);
-        a = c;
-        b = b + d;
-
-        c = a + lnzb;
-        d = -(c - a - lnzb);
-        a = c;
-        b = b + d;
-
-        if (hiPrec != null) {
-            hiPrec[0] = a;
-            hiPrec[1] = b;
-        }
-
-        return a + b;
     }
 }
