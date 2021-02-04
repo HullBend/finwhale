@@ -53,26 +53,6 @@ class CommonsCalc {
         +121645100408832000.0d,       // 19
         };
 
-    /** Coefficients for slowLog. */
-    private static final double LN_SPLIT_COEF[][] = {
-        {2.0, 0.0},
-        {0.6666666269302368, 3.9736429850260626E-8},
-        {0.3999999761581421, 2.3841857910019882E-8},
-        {0.2857142686843872, 1.7029898543501842E-8},
-        {0.2222222089767456, 1.3245471311735498E-8},
-        {0.1818181574344635, 2.4384203044354907E-8},
-        {0.1538461446762085, 9.140260083262505E-9},
-        {0.13333332538604736, 9.220590270857665E-9},
-        {0.11764700710773468, 1.2393345855018391E-8},
-        {0.10526403784751892, 8.251545029714408E-9},
-        {0.0952233225107193, 1.2675934823758863E-8},
-        {0.08713622391223907, 1.1430250008909141E-8},
-        {0.07842259109020233, 2.404307984052299E-9},
-        {0.08371849358081818, 1.176342548272881E-8},
-        {0.030589580535888672, 1.2958646899018938E-9},
-        {0.14982303977012634, 1.225743062930824E-8},
-    };
-
     /**
      * Private Constructor.
      */
@@ -321,68 +301,5 @@ class CommonsCalc {
         }
 
         return ys[0] + ys[1];
-    }
-
-    /** xi in the range of [1, 2].
-     *                                3        5        7
-     *      x+1           /          x        x        x          \
-     *  ln ----- =   2 *  |  x  +   ----  +  ----  +  ---- + ...  |
-     *      1-x           \          3        5        7          /
-     *
-     * So, compute a Remez approximation of the following function
-     *
-     *  ln ((sqrt(x)+1)/(1-sqrt(x)))  /  x
-     *
-     * This will be an even function with only positive coefficients.
-     * x is in the range [0 - 1/3].
-     *
-     * Transform xi for input to the above function by setting
-     * x = (xi-1)/(xi+1).   Input to the polynomial is x^2, then
-     * the result is multiplied by x.
-     * @param xi number from which log is requested
-     * @return log(xi)
-     */
-    static double[] slowLog(double xi) {
-        double x[] = new double[2];
-        double x2[] = new double[2];
-        double y[] = new double[2];
-        double a[] = new double[2];
-
-        split(xi, x);
-
-        /* Set X = (x-1)/(x+1) */
-        x[0] += 1.0;
-        resplit(x);
-        splitReciprocal(x, a);
-        x[0] -= 2.0;
-        resplit(x);
-        splitMult(x, a, y);
-        x[0] = y[0];
-        x[1] = y[1];
-
-        /* Square X -> X2*/
-        splitMult(x, x, x2);
-
-
-        //x[0] -= 1.0;
-        //resplit(x);
-
-        y[0] = LN_SPLIT_COEF[LN_SPLIT_COEF.length-1][0];
-        y[1] = LN_SPLIT_COEF[LN_SPLIT_COEF.length-1][1];
-
-        for (int i = LN_SPLIT_COEF.length-2; i >= 0; i--) {
-            splitMult(y, x2, a);
-            y[0] = a[0];
-            y[1] = a[1];
-            splitAdd(y, LN_SPLIT_COEF[i], a);
-            y[0] = a[0];
-            y[1] = a[1];
-        }
-
-        splitMult(y, x, a);
-        y[0] = a[0];
-        y[1] = a[1];
-
-        return y;
     }
 }
