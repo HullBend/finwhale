@@ -87,12 +87,12 @@ final class CommonsAccurateMath {
          * Exponential evaluated at integer values, exp(x) = expIntTableA[x +
          * EXP_INT_TABLE_MAX_INDEX] + expIntTableB[x+EXP_INT_TABLE_MAX_INDEX].
          */
-        private static final double[] EXP_INT_TABLE_A;
+        static final double[] EXP_INT_TABLE_A;
         /**
          * Exponential evaluated at integer values, exp(x) = expIntTableA[x +
          * EXP_INT_TABLE_MAX_INDEX] + expIntTableB[x+EXP_INT_TABLE_MAX_INDEX]
          */
-        private static final double[] EXP_INT_TABLE_B;
+        static final double[] EXP_INT_TABLE_B;
 
         static {
             if (RECOMPUTE_TABLES_AT_RUNTIME) {
@@ -135,12 +135,12 @@ final class CommonsAccurateMath {
          * Exponential over the range of 0 - 1 in increments of 2^-10
          * exp(x/1024) = expFracTableA[x] + expFracTableB[x]. 1024 = 2^10
          */
-        private static final double[] EXP_FRAC_TABLE_A;
+        static final double[] EXP_FRAC_TABLE_A;
         /**
          * Exponential over the range of 0 - 1 in increments of 2^-10
          * exp(x/1024) = expFracTableA[x] + expFracTableB[x].
          */
-        private static final double[] EXP_FRAC_TABLE_B;
+        static final double[] EXP_FRAC_TABLE_B;
 
         static {
             if (RECOMPUTE_TABLES_AT_RUNTIME) {
