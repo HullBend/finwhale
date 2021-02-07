@@ -407,7 +407,7 @@ final class CommonsAccurateMath {
      * @return exp(x) - 1
      */
     private static double expm1_(double x, double hiPrecOut[]) {
-        if (x != x || x == 0.0) { // NaN or zero
+        if (Double.isNaN(x) || x == 0.0) { // NaN or zero
             return x;
         }
 
@@ -558,7 +558,7 @@ final class CommonsAccurateMath {
      * @return hyperbolic cosine of x
      */
     static double cosh(double x) {
-        if (x != x) {
+        if (Double.isNaN(x)) {
             return x;
         }
 
@@ -633,7 +633,7 @@ final class CommonsAccurateMath {
      */
     static double sinh(double x) {
         boolean negate = false;
-        if (x != x) {
+        if (Double.isNaN(x)) {
             return x;
         }
 
@@ -763,7 +763,7 @@ final class CommonsAccurateMath {
     static double tanh(double x) {
         boolean negate = false;
 
-        if (x != x) {
+        if (Double.isNaN(x)) {
             return x;
         }
 
