@@ -84,8 +84,7 @@ public final class RootFinder {
             fc = fa;
         }
 
-        int i;
-        for (i = 0; i < MAX_ITER; i++) {
+        for (int i = 0; i < MAX_ITER; i++) {
             double tol2 = tol + (4.0 * MathConsts.BIG_INV * Math.abs(b));
             double xm = 0.5 * (c - b);
             if (DEBUG) {
@@ -166,9 +165,6 @@ public final class RootFinder {
             }
         }
 
-        if (i >= MAX_ITER) {
-            System.err.println("WARN: brentDekker root finding does not converge");
-        }
         return b;
     }
 
